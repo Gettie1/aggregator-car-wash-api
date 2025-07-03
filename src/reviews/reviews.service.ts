@@ -1,0 +1,163 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Review } from './entities/review.entity';
+import { Repository } from 'typeorm';
+import { Service } from 'src/services/entities/service.entity';
+import { Vendor } from 'src/vendors/entities/vendor.entity';
+import { Vehicle } from 'src/vehicles/entities/vehicle.entity';
+import { Booking } from 'src/bookings/entities/booking.entity';
+
+@Injectable()
+export class ReviewsService {
+  constructor(
+    @InjectRepository(Review)
+    private reviewRepository: Repository<Review>,
+    @InjectRepository(Service)
+    private serviceRepository: Repository<Service>,
+    @InjectRepository(Vendor)
+    private vendorRepository: Repository<Vendor>,
+    @InjectRepository(Vehicle)
+    private vehicleRepository: Repository<Vehicle>,
+    @InjectRepository(Booking)
+    private bookingRepository: Repository<Booking>,
+  ) {}
+  async create(createRatingDto: CreateReviewDto) {
+    // Validate and fetch related entities if necessary
+    const { booking_id, vehicle_id, service_id, vendor_id } = createRatingDto;
+
+    // Fetch the booking to ensure it exists
+    const booking = await this.bookingRepository.findOne({
+      where: { id: booking_id },
+      select: ['id'],
+    });
+    if (!booking) {
+      throw new NotFoundException(
+        `Booking with ID ${booking_id} does not exist`,
+      );
+    }
+
+    // Optionally fetch vehicle, service, and vendor if provided
+    let vehicle;
+    if (vehicle_id) {
+      vehicle = await this.vehicleRepository.findOne({
+        where: { id: vehicle_id },
+        select: ['id'],
+      });
+      if (!vehicle) {
+        throw new NotFoundException(
+          `Vehicle with ID ${vehicle_id} does not exist`,
+        );
+      }
+    }
+
+    let service;
+    if (service_id) {
+      service = await this.serviceRepository.findOne({
+        where: { id: service_id },
+        select: ['id'],
+      });
+      if (!service) {
+        throw new NotFoundException(
+          `Service with ID ${service_id} does not exist`,
+        );
+      }
+    }
+
+    let vendor;
+    if (vendor_id) {
+      vendor = await this.vendorRepository.findOne({
+        where: { id: vendor_id },
+        select: ['id'],
+      });
+      if (!vendor) {
+        throw new NotFoundException(
+          `Vendor with ID ${vendor_id} does not exist`,
+        );
+      }
+    }
+
+    // Create the review entity
+    const review = this.reviewRepository.create({
+      ...createRatingDto,
+    });
+
+    return this.reviewRepository.save(review);
+  }
+
+  async findAll() {
+    const reviews = await this.reviewRepository.find({
+      relations: ['vehicle', 'service', 'vendor'],
+    });
+
+    return reviews.map((review) => {
+      const { vehicle, service, vendor, ...reviewWithoutRelations } = review;
+      return {
+        ...reviewWithoutRelations,
+        vehicle: vehicle
+          ? { id: vehicle.id, license_plate: vehicle.license_plate }
+          : null,
+        service: service ? { id: service.id, name: service.name } : null,
+        vendor: vendor
+          ? { id: vendor.id, business_name: vendor.business_name }
+          : null,
+      };
+    });
+  }
+
+  async findOne(id: string) {
+    const review = await this.reviewRepository.findOne({
+      where: { id },
+      relations: ['vehicle', 'service', 'vendor'],
+    });
+
+    if (!review) {
+      throw new NotFoundException(`review with ID ${id} not found`);
+    }
+
+    const { vehicle, service, vendor, ...reviewWithoutRelations } = review;
+    return {
+      ...reviewWithoutRelations,
+      vehicle: vehicle
+        ? { id: vehicle.id, license_plate: vehicle.license_plate }
+        : null,
+      service: service ? { id: service.id, name: service.name } : null,
+      vendor: vendor
+        ? { id: vendor.id, business_name: vendor.business_name }
+        : null,
+    };
+  }
+
+  async update(id: string, updateReviewDto: UpdateReviewDto) {
+    const review = await this.reviewRepository.findOne({
+      where: { id },
+      relations: ['vehicle', 'service', 'vendor'],
+    });
+
+    if (!review) {
+      throw new NotFoundException(`review with ID ${id} not found`);
+    }
+
+    // Update the rating with the new data
+    Object.assign(review, updateReviewDto);
+
+    // Save the updated review
+    return this.reviewRepository.save(review);
+  }
+
+  async remove(id: string) {
+    const review = await this.reviewRepository.findOne({
+      where: { id },
+      relations: ['vehicle', 'service', 'vendor'],
+    });
+
+    if (!review) {
+      throw new NotFoundException(`Rating with ID ${id} not found`);
+    }
+
+    // Remove the review
+    await this.reviewRepository.remove(review);
+    return { message: `Rating with ID ${id} removed successfully` };
+  }
+}

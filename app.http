@@ -1,0 +1,278 @@
+@url=http://localhost:3000
+
+
+@refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTIzMjQ5LCJleHAiOjE3NTE1MjQxNDl9.EbUk3H3VLT2GPNpKGX53b6zLv61y5yAsdBwDh6ng3wY
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTQyODUxLCJleHAiOjE3NTE1NDM3NTF9.giYt-amT5TpEqXVoNDYf-CJ5ay5-31FfRkIbCbu1Z7E
+
+
+@admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0LCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTU0MzE4NywiZXhwIjoxNzUxNTQ0MDg3fQ.0ovBnvKZgQh4zunVqx2ReVVQtN10XaEKtXocKRClWX0
+@vendor_token =
+@customer_token =
+#### sign In ####
+POST {{url}}/auth/signin
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin123"
+}
+
+
+#### CREATE NEW PROFILE ####
+POST {{url}}/profile
+Content-Type: application/json
+
+{
+  "firstName": "admin",
+  "lastName": "Smith",
+  "email": "admin@gmail.com",
+  "password": "admin123", 
+  "role": "admin",
+  "phone": "0987654321"
+}
+#### GET ALL PROFILES ####
+GET {{url}}/profile
+Authorization: Bearer {{admin_token}}
+
+#### GET PROFILE BY ID ####
+GET {{url}}/profile/4
+
+###  UPDATE PROFILE BY ID ###
+PATCH {{url}}/profile/1
+Content-Type: application/json
+
+{
+  "firstName": "june",
+  "email":"june@gmail.com"
+}
+
+### DELETE PROFILE BY ID ###
+DELETE {{url}}/profile/4
+
+#### SEED DATABASE ####
+POST {{url}}/seed
+
+
+#### CREATE NEW VENDOR ####
+POST {{url}}/vendors
+Content-Type: application/json
+
+{ 
+  "profileId": "5",
+  "business_name": "Super Clean Car Wash",
+  "phone": "1234567890",
+  "tax_id": "123456789",
+  "business_address": "456 Elm St, City, Country",
+  "status": "active"
+
+}
+#### GET ALL VENDORS ####
+GET {{url}}/vendors
+
+#### GET VENDOR BY ID ####
+GET {{url}}/vendors/2
+
+### UPDATE VENDOR BY ID ###
+PATCH {{url}}/vendors/1
+Content-Type: application/json
+
+{ 
+  "phone": "123455670",
+  "status": "InActive"
+  
+}
+
+#### DELETE VENDOR BY ID ####
+DELETE {{url}}/vendors/1
+
+
+
+### CREATE NEW CUSTOMER ####
+POST {{url}}/customer
+Content-Type: application/json
+
+{
+  "profileId":"5",
+  "phoneNumber":"1278345690",
+  "address": "123456789",
+  "vehicle_id": "2"
+
+}
+
+#### GET ALL CUSTOMERS ####
+GET {{url}}/customer
+
+#### GET CUSTOMER BY ID ####
+GET {{url}}/customer/1
+
+#### UPDATE CUSTOMER BY ID ###
+PATCH {{url}}/customer/2
+Content-Type: application/json
+
+{
+  "phone_number": "1234567811"
+}
+
+#### DELETE CUSTOMER BY ID ####
+DELETE {{url}}/customer/1
+
+
+#### CREATE NEW ADMIN ####
+POST {{}}/admins
+Content-Type: application/json
+
+{
+  ""
+}
+
+#### GET ALL ADMINS ####
+GET {{url}}/admins
+
+#### GET ADMIN BY ID ####
+GET {{url}}/admins/1
+
+#### UPDATE ADMIN BY ID ####
+PATCH {{url}}/admins/1
+Content-Type: application/json
+
+{
+  ""
+}
+
+#### DELETE ADMIN BY ID ####
+DELETE {{url}}/admins/1
+
+#### CREATE NEW BOOKING ####
+POST {{url}}/bookings
+Content-Type: application/json
+
+{
+  "customerId": "2",
+  "serviceId": "3",
+  "vendorId": "2",
+  "vehicleId": "2",
+  "duration": "60",
+  "location": "123 Main St, City, Country",
+  "scheduled_at": "2023-10-01T10:00:00Z",
+  "status": "pending",
+  "payment_status": "unpaid",
+  "payment_method": "credit_card"
+}
+#### GET ALL BOOKINGS ####
+GET {{url}}/bookings
+
+#### GET BOOKING BY ID ####
+GET {{url}}/bookings/1
+
+#### UPDATE BOOKING BY ID ####
+PATCH {{url}}/bookings/1
+Content-Type: application/json
+
+{
+  "status": "confirmed"
+}
+
+#### DELETE BOOKING BY ID ####
+DELETE {{url}}/bookings/1
+
+#### CREATE NEW VEHICLE ####
+POST {{url}}/vehicles
+Content-Type: application/json
+
+{
+  "customer_id": "7",
+  "make": "Toyota",
+  "model": "Camry",
+  "year": 2020,
+  "color": "Blue",
+  "license_plate": "ABC1234"
+} 
+
+#### GET ALL VEHICLES ####
+GET {{url}}/vehicles
+
+#### GET VEHICLE BY ID ####
+GET {{url}}/vehicles/1
+
+#### UPDATE VEHICLE BY ID ####
+PATCH {{url}}/vehicles/1
+Content-Type: application/json
+
+{
+  "make": "Honda",
+  "model": "Civic",
+  "year": 2021,
+  "color": "Red",
+  "license_plate": "XYZ1234"
+}
+
+#### DELETE VEHICLE BY ID ####
+DELETE {{url}}/vehicles/1
+
+#### CREATE NEW SERVICE ####
+POST {{url}}/services
+Content-Type: application/json
+
+{
+  "name": "simple wash",
+  "description": "A basic wash service",
+  "price": "29.99",
+  "duration": "60",
+  "vendorId": "2"
+}
+
+#### GET ALL SERVICES ####
+GET {{url}}/services
+
+#### GET SERVICE BY ID ####
+GET {{url}}/services/3
+
+#### UPDATE SERVICE BY ID ####
+PATCH {{url}}/services/3
+Content-Type: application/json
+
+{
+  "name": "Premium Wash",
+  "description": "A premium wash service with extra care",
+  "price": "49.99",
+  "duration": "90"
+}
+
+#### DELETE SERVICE BY ID ####
+DELETE {{url}}/services/4
+
+#### CREATE NEW REVIEW ####
+POST {{url}}/reviews
+Content-Type: application/json
+
+{
+  "customer_id": "2",
+  "vendor_id": "2",
+  "booking_id": "1",
+  "vehicle_id": "2",
+  "service_id": "3",
+  "rating": "5",
+  "comment": "Great service!"
+}
+
+#### GET ALL REVIEWS ####
+GET {{url}}/reviews
+
+#### GET REVIEW BY ID ####
+GET {{url}}/reviews/2
+
+#### UPDATE REVIEW BY ID ####
+PATCH {{url}}/reviews/2
+Content-Type: application/json
+
+{
+  "rating": "4",
+  "comment": "Good service, but could be better."
+}
+
+#### DELETE REVIEW BY ID ####
+DELETE {{url}}/reviews/1
+
+
+
+
