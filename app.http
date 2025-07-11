@@ -2,7 +2,7 @@
 
 
 @refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTIzMjQ5LCJleHAiOjE3NTE1MjQxNDl9.EbUk3H3VLT2GPNpKGX53b6zLv61y5yAsdBwDh6ng3wY
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiZ2V0cnVkZUBnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTE5OTkwODQsImV4cCI6MTc1MjAwMjY4NH0.n5Kev16LoXFw4i9b7paX_MRtzJMWHhNC0QSQdhRStFY
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiZ2V0cnVkZUBnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTIyMjMwODgsImV4cCI6MTc1MjIyNjY4OH0.igDb_Or3JkM2g6OxWtNRoS-DO3VfOSkRvGpUUMEg0Fc
 
 
 @admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0LCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTU0MzE4NywiZXhwIjoxNzUxNTQ0MDg3fQ.0ovBnvKZgQh4zunVqx2ReVVQtN10XaEKtXocKRClWX0
@@ -41,10 +41,10 @@ Authorization: Bearer {{accessToken}}
 ###  UPDATE PROFILE BY ID ###
 PATCH {{url}}/profile/1
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
-  "firstName": "june",
-  "email":"june@gmail.com"
+  "role":"admin"
 }
 
 ### DELETE PROFILE BY ID ###
@@ -234,7 +234,7 @@ GET {{url}}/services
 GET {{url}}/services/3
 
 #### GET SERVICES BY VENDOR ID ####
-GET {{url}}/services/vendor/1
+GET {{url}}/services/profile/1
 
 #### UPDATE SERVICE BY ID ####
 PATCH {{url}}/services/3

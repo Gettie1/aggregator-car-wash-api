@@ -30,8 +30,8 @@ export class Profile {
   @Column()
   @Exclude()
   password: string;
-  // @Column({ unique: true })
-  // phone: string; // Unique phone number for the user
+  @Column({ type: 'varchar', length: 20, nullable: true, unique: true }) // ✅ Added unique constraint
+  phone: string; // Unique phone number for the user
   @Column({ type: 'enum', enum: Role, default: Role.CUSTOMER })
   role: Role; // Role of the user, e.g., "customer", "vendor
   @Exclude()

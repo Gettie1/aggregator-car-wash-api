@@ -92,10 +92,28 @@ export class ServicesService {
   // services.service.ts
   // get array of  services belonging to a vendor by profile id
 
-  async getServicesByVendorId(vendorId: number): Promise<Service[]> {
-    return this.serviceRepository.find({
-      where: { vendor: { id: vendorId.toString() } },
-      order: { id: 'ASC' }, // optional sorting
+  async getServicesByProfileId(profileId: number) {
+    const services = await this.serviceRepository.find({
+      where: { vendor: { id: profileId.toString() } },
+      relations: ['vendor', 'bookings', 'reviews'],
+    });
+    return services.map((service) => {
+      const { vendor, bookings, reviews, ...serviceWithoutRelations } = service;
+      return {
+        ...serviceWithoutRelations,
+        vendor: vendor
+          ? { id: vendor.id, business_name: vendor.business_name }
+          : null,
+        bookings: bookings.map((booking: Booking) => ({
+          id: booking.id,
+          // Replace 'date' with an existing property, e.g., 'createdAt' or remove if not needed
+          // createdAt: booking.createdAt,
+        })),
+        reviews: reviews.map((review: Review) => ({
+          id: review.id,
+          rating: review.rating,
+        })),
+      };
     });
   }
 

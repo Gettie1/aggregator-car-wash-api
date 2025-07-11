@@ -19,7 +19,8 @@ import {
 export class Vendor {
   @PrimaryGeneratedColumn()
   id: string;
-
+  @Column({ type: 'varchar', length: 50, unique: true })
+  profileId: string; // ID of the profile associated with the vendor
   @Column({ type: 'varchar', length: 255 })
   business_name: string; // Business name of the vendor
 
@@ -46,7 +47,9 @@ export class Vendor {
   @OneToMany(() => Booking, (booking) => booking.vendor)
   bookings: Relation<Booking[]>;
 
-  @OneToMany(() => Service, (service) => service.vendor)
+  @OneToMany(() => Service, (service) => service.vendor, {
+    onDelete: 'CASCADE',
+  })
   services: Relation<Service[]>;
 
   @OneToMany(() => Review, (review) => review.vendor)

@@ -24,7 +24,7 @@ export class CreateProfileDto {
   })
   @IsString()
   @IsOptional()
-  phone: string; // Phone number of the user, should be unique
+  phone: string;
   @ApiProperty({
     type: String,
     description: 'Password for the user account',

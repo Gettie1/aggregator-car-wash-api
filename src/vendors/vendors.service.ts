@@ -62,6 +62,7 @@ export class VendorsService {
         lastName: createVendorDto.lastName ?? '',
         email: createVendorDto.email ?? '',
         password: createVendorDto.password ?? '',
+        phone: createVendorDto.phone ?? '', // Uncomment if phone is part of the DTO
         role: Role.VENDOR, // Set the role to VENDOR
       };
       // Create a new profile if it doesn't exist
