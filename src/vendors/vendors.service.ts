@@ -13,6 +13,7 @@ import { Review } from 'src/reviews/entities/review.entity';
 import { Repository } from 'typeorm';
 import { Vendor } from './entities/vendor.entity';
 import { Role } from 'src/profile/entities/profile.entity';
+import { CreateProfileDto } from 'src/profile/dto/create-profile.dto';
 // import { profile } from 'console';
 
 @Injectable()
@@ -50,13 +51,33 @@ export class VendorsService {
         id: Number(createVendorDto.profileId),
         role: Role.VENDOR,
       },
-      select: ['id', 'firstName', 'lastName', 'email', 'phone'],
-      relations: ['vendor'],
+      select: ['id', 'firstName', 'lastName', 'email'],
+      // relations: ['vendor'],
     });
-    if (!profileEntity) {
-      throw new BadRequestException('Profile not found for the given ID');
-    }
+    // create a new profile if it doesn't exist
 
+    if (!profileEntity) {
+      const createProfileDto: CreateProfileDto = {
+        firstName: createVendorDto.firstName ?? '',
+        lastName: createVendorDto.lastName ?? '',
+        email: createVendorDto.email ?? '',
+        password: createVendorDto.password ?? '',
+        role: Role.VENDOR, // Set the role to VENDOR
+      };
+      // Create a new profile if it doesn't exist
+      const newProfile = this.profileRepository.create(createProfileDto);
+      await this.profileRepository.save(newProfile);
+      // Use the newly created profile as the profile entity
+      return this.vendorRepository.save(
+        this.vendorRepository.create({
+          business_name: createVendorDto.business_name,
+          tax_id: createVendorDto.tax_id,
+          business_address: createVendorDto.business_address,
+          status: createVendorDto.status || 'active', // Default status to 'active'
+          profile: newProfile,
+        }),
+      );
+    }
     // Create a new Vendor entity
     const newVendor = this.vendorRepository.create({
       business_name: createVendorDto.business_name,

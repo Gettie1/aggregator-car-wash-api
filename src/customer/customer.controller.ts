@@ -21,7 +21,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 // @UseGuards(AtGuard, RolesGuard)
 // @Public()
-@ApiTags('Customers')
+@ApiTags('Customer')
 @ApiBearerAuth('Access Token')
 @Controller('customer')
 export class CustomerController {

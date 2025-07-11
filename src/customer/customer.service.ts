@@ -44,7 +44,7 @@ export class CustomerService {
         id: Number(createCustomerDto.profileId),
         role: Role.CUSTOMER,
       },
-      select: ['id', 'firstName', 'lastName', 'email', 'phone'],
+      select: ['id', 'firstName', 'lastName', 'email'],
       relations: ['customer'],
     });
     if (!profileEntity) {
@@ -63,7 +63,6 @@ export class CustomerService {
     if (search) {
       customers = await this.profileRepository.find({
         where: {
-          // vendor: { business_name: search },
           role: Role.CUSTOMER,
         },
         relations: ['customer'],
@@ -76,16 +75,34 @@ export class CustomerService {
         relations: ['customer'],
       });
     }
-
-    return customers.map((customer) => ({
-      ...customer,
-      customer: customer.customer,
-    }));
+    // Return only specific profile data and customer data
+    return customers.map((customer) => {
+      const {
+        id,
+        firstName,
+        lastName,
+        email,
+        customer: customerData,
+      } = customer;
+      return {
+        id,
+        firstName,
+        lastName,
+        email,
+        customer: customerData
+          ? {
+              id: customerData.id,
+              phone_number: customerData.phone_number,
+              address: customerData.address,
+            }
+          : null,
+      };
+    });
   }
 
-  async findOne(id: string) {
+  async findOne(profileId: string) {
     const customer = await this.customerRepository.findOne({
-      where: { id },
+      where: { profile: { id: Number(profileId) } },
       relations: [
         'profile',
         // 'customer.bookings',
@@ -95,7 +112,7 @@ export class CustomerService {
     });
 
     if (!customer) {
-      throw new NotFoundException(`Vendor with ID ${id} not found`);
+      throw new NotFoundException(`Customer with ID ${profileId} not found`);
     }
 
     return {

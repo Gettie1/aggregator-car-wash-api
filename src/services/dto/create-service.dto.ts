@@ -24,17 +24,17 @@ export class CreateServiceDto {
   @IsString()
   description: string; // Description of the service
   @ApiProperty({
-    type: Number,
+    type: String,
     description: 'Price of the service',
     example: 29.99,
   })
   @IsString()
-  price: number; // Price of the service
+  price: string; // Price of the service
   @ApiProperty({
-    type: Number,
+    type: String,
     description: 'Duration of the service in minutes',
     example: 30,
   })
   @IsString()
-  duration: number; // Duration of the service in minutes
+  duration: string; // Duration of the service in minutes
 }

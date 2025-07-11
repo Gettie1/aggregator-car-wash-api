@@ -19,6 +19,9 @@ export class Review {
   id: string;
 
   @Column()
+  profile_id: string;
+
+  @Column()
   booking_id: string; // Foreign key to Booking
 
   @Column()

@@ -25,7 +25,7 @@ export class Booking {
   location: string;
 
   @Column({ type: 'timestamp' })
-  date: Date;
+  scheduled_at: Date;
 
   @Column()
   status: string; // Status of the booking, e.g., "pending", "confirmed", "completed", "cancelled"
@@ -45,9 +45,6 @@ export class Booking {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updated_at?: Date;
-
-  @Column({ type: 'timestamp', nullable: true })
-  cancelled_at?: Date;
 
   @ManyToOne(() => Customer, (customer) => customer.bookings)
   @JoinColumn()

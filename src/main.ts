@@ -3,8 +3,17 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
+// import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(helmet()); // Use Helmet for security headers
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders:
+      'Content-Type, Accept, Authorization, X-Requested-With, X-API-KEY',
+  });
   // Enable global validation
   app.useGlobalPipes(
     new ValidationPipe({
@@ -14,7 +23,7 @@ async function bootstrap() {
     }),
   );
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT') || 3000;
+  const port = configService.get<number>('PORT') || 4001;
 
   const config = new DocumentBuilder()
     .setTitle('🚗Aggregator Car Wash API')

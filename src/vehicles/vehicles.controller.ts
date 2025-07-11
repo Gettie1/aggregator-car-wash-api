@@ -39,6 +39,11 @@ export class VehiclesController {
   findOne(@Param('id') id: string) {
     return this.vehiclesService.findOne(id);
   }
+  @Roles(Role.ADMIN, Role.CUSTOMER)
+  @Get('customer/:customerId')
+  findByCustomerId(@Param('customerId') customerId: string) {
+    return this.vehiclesService.findByCustomerId(customerId);
+  }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateVehicleDto: UpdateVehicleDto) {

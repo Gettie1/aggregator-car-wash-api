@@ -43,6 +43,11 @@ export class ReviewsController {
   findOne(@Param('id') id: string) {
     return this.reviewsService.findOne(id);
   }
+  @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
+  @Get('vehicle/:id')
+  findByVehicleId(@Param('id') id: string) {
+    return this.reviewsService.findByVehicleId(id);
+  }
 
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Patch(':id')

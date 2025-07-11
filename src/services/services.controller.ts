@@ -41,6 +41,11 @@ export class ServicesController {
     return this.servicesService.findOne(+id);
   }
   @Roles(Role.ADMIN, Role.VENDOR)
+  @Get('vendor/:vendorId')
+  getServicesByVendorId(@Param('vendorId') vendorId: string) {
+    return this.servicesService.getServicesByVendorId(+vendorId);
+  }
+  @Roles(Role.ADMIN, Role.VENDOR)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
     return this.servicesService.update(+id, updateServiceDto);

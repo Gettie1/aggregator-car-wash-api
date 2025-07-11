@@ -128,6 +128,53 @@ export class ReviewsService {
         : null,
     };
   }
+  async findByCustomerId(customerId: string) {
+    const reviews = await this.reviewRepository.find({
+      where: { id: customerId },
+      relations: ['customer', 'vehicle', 'service', 'vendor', 'booking'], // adjust as needed
+      order: { created_at: 'DESC' },
+    });
+
+    if (!reviews.length) {
+      throw new NotFoundException(
+        `No reviews found for customer ID ${customerId}`,
+      );
+    }
+
+    return reviews.map((review) => ({
+      id: review.id,
+      rating: review.rating,
+      comment: review.comment,
+      created_at: review.created_at,
+      vehicle: review.vehicle ? review.vehicle.license_plate : null,
+      service: review.service?.name || null,
+      vendor: review.vendor?.business_name || null,
+    }));
+  }
+  async findByVehicleId(vehicleId: string) {
+    const reviews = await this.reviewRepository.find({
+      where: { vehicle: { id: vehicleId } },
+      relations: ['vehicle', 'service', 'vendor'],
+    });
+    if (reviews.length === 0) {
+      throw new NotFoundException(
+        `No reviews found for vehicle ID ${vehicleId}`,
+      );
+    }
+    return reviews.map((review) => {
+      const { vehicle, service, vendor, ...reviewWithoutRelations } = review;
+      return {
+        ...reviewWithoutRelations,
+        vehicle: vehicle
+          ? { id: vehicle.id, license_plate: vehicle.license_plate }
+          : null,
+        service: service ? { id: service.id, name: service.name } : null,
+        vendor: vendor
+          ? { id: vendor.id, business_name: vendor.business_name }
+          : null,
+      };
+    });
+  }
 
   async update(id: string, updateReviewDto: UpdateReviewDto) {
     const review = await this.reviewRepository.findOne({

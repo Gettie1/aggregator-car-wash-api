@@ -1,28 +1,29 @@
 // import { IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateBookingDto {
   @ApiProperty({ type: String, description: 'Customer ID', example: '12345' })
   @IsString()
   customerId: string;
-  @ApiProperty({ type: String, description: 'Service ID', example: '67890' })
+  @ApiProperty({ type: String, description: 'service name', example: '67890' })
   @IsString()
-  serviceId: string;
+  serviceName: string;
   @ApiProperty({ type: String, description: 'Vendor ID', example: '54321' })
   @IsString()
-  vendorId: string;
+  vendorName: string;
   @ApiProperty({ type: String, description: 'Vehicle ID', example: '98765' })
   @IsString()
-  vehicleId: string;
+  @IsOptional()
+  vehiclePlateNo: string;
   @ApiProperty({
-    type: Number,
+    type: String,
     description: 'Booking duration in minutes',
-    example: 60,
+    example: '60',
   })
   @IsString()
-  duration: number;
+  duration: string;
   @ApiProperty({
     type: String,
     description: 'Booking location',

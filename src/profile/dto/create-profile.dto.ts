@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
 import { Role } from '../entities/profile.entity'; // Importing the Role enum from user entity
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -23,6 +23,7 @@ export class CreateProfileDto {
     example: '+1234567890',
   })
   @IsString()
+  @IsOptional()
   phone: string; // Phone number of the user, should be unique
   @ApiProperty({
     type: String,

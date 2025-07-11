@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
 } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -35,8 +34,18 @@ export class BookingsController {
   }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Get()
-  findAll(@Query('search') search?: string) {
-    return this.bookingsService.findAll(search);
+  findAll() {
+    return this.bookingsService.findAll();
+  }
+  @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
+  @Get('customer/:customerId')
+  findByCustomerId(@Param('customerId') customerId: string) {
+    return this.bookingsService.findByCustomerId(customerId);
+  }
+  @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
+  @Get('vendor/:vendorId')
+  findByVendorId(@Param('vendorId') vendorId: string) {
+    return this.bookingsService.findByVendorId(vendorId);
   }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Get(':id')

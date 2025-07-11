@@ -21,39 +21,50 @@ export class ServicesService {
     private serviceRepository: Repository<Service>,
   ) {}
   async create(createServiceDto: CreateServiceDto) {
-    const existingService = await this.vendorRepository.findOne({
-      where: { services: { name: createServiceDto.name } },
+    // check if service name already exists for the same vendor
+    const existingService = await this.serviceRepository.findOne({
+      where: {
+        vendor: { id: createServiceDto.vendorId },
+        name: createServiceDto.name,
+      },
       select: ['id'],
-      // relations: ['services'],
+      relations: ['vendor'],
     });
     if (existingService) {
       throw new BadRequestException(
-        `Service with name ${createServiceDto.name} already exists`,
+        `Service with name ${createServiceDto.name} already exists for this vendor`,
       );
     }
-    // You need to fetch the Vendor entity by vendorId (assuming createServiceDto has vendorId)
-    const vendorEntity = await this.vendorRepository.findOne({
-      where: {
-        id: createServiceDto.vendorId,
-      },
+    // Find the vendor by ID
+    const vendor = await this.vendorRepository.findOne({
+      where: { id: createServiceDto.vendorId },
       select: ['id', 'business_name'],
-      // relations: ['services'],
     });
-    if (!vendorEntity) {
+    if (!vendor) {
       throw new BadRequestException(
-        `Vendor with id ${createServiceDto.vendorId} does not exist`,
+        `Vendor with id ${createServiceDto.vendorId} not found`,
       );
     }
+    // Create a new service entity
     const newService = this.serviceRepository.create({
       name: createServiceDto.name,
       description: createServiceDto.description,
-      price: createServiceDto.price,
-      duration: createServiceDto.duration,
-      vendor: vendorEntity,
+      price: Number(createServiceDto.price),
+      duration: Number(createServiceDto.duration),
+      vendor,
     });
-    return this.serviceRepository.save(newService);
+    // Save the new service to the database
+    const savedService = await this.serviceRepository.save(newService);
+    const { vendor: savedVendor, ...serviceWithoutRelations } = savedService;
+    return {
+      ...serviceWithoutRelations,
+      vendor: savedVendor
+        ? { id: savedVendor.id, business_name: savedVendor.business_name }
+        : null,
+      bookings: [],
+      reviews: [],
+    };
   }
-
   async findAll() {
     const services = await this.serviceRepository.find({
       relations: ['vendor', 'bookings', 'reviews'],
@@ -75,6 +86,16 @@ export class ServicesService {
           rating: review.rating,
         })),
       };
+    });
+  }
+  // return array of services belonging to a specific vendor
+  // services.service.ts
+  // get array of  services belonging to a vendor by profile id
+
+  async getServicesByVendorId(vendorId: number): Promise<Service[]> {
+    return this.serviceRepository.find({
+      where: { vendor: { id: vendorId.toString() } },
+      order: { id: 'ASC' }, // optional sorting
     });
   }
 

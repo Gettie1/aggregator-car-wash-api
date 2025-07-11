@@ -32,7 +32,8 @@ export class Vehicle {
 
   @Column({ type: 'varchar', length: 20, unique: true })
   license_plate: string; // License plate number
-
+  @Column({ type: 'boolean', default: false })
+  is_deleted: boolean; // Soft delete flag
   @Column()
   customer_id: string; // Foreign key to Customer
 

@@ -37,7 +37,7 @@ export class ProfileService {
       firstName: createProfileDto.firstName,
       lastName: createProfileDto.lastName,
       email: createProfileDto.email,
-      phone: createProfileDto.phone, // Add the missing phone field
+      // phone: createProfileDto.phone, // Add the missing phone field
       password: await this.hashData(createProfileDto.password), // Hash the password
       role: createProfileDto.role,
     };

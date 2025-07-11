@@ -28,7 +28,8 @@ export class BookingsService {
     private VehicleRepository: Repository<Vehicle>,
   ) {}
   async create(createBookingDto: CreateBookingDto) {
-    const { customerId, vendorId, serviceId, vehicleId } = createBookingDto;
+    const { customerId, vendorName, serviceName, vehiclePlateNo } =
+      createBookingDto;
 
     const customer = await this.CustomerRepository.findOneBy({
       id: customerId,
@@ -37,50 +38,121 @@ export class BookingsService {
       throw new NotFoundException('Customer not found');
     }
 
-    const vendor = await this.VendorRepository.findOneBy({ id: vendorId });
+    const vendor = await this.VendorRepository.findOneBy({
+      business_name: vendorName,
+    });
     if (!vendor) {
       throw new NotFoundException('Vendor not found');
     }
 
-    const service = await this.ServiceRepository.findOneBy({ id: serviceId });
+    const service = await this.ServiceRepository.findOneBy({
+      name: serviceName,
+    });
     if (!service) {
       throw new NotFoundException('Service not found');
     }
 
-    const vehicle = await this.VehicleRepository.findOneBy({ id: vehicleId });
+    const vehicle = await this.VehicleRepository.findOneBy({
+      license_plate: vehiclePlateNo,
+    });
     if (!vehicle) {
       throw new NotFoundException('Vehicle not found');
     }
 
+    // Ensure the vehicle is not already booked by another customer
+    const existingBooking = await this.BookingRepository.findOne({
+      where: {
+        vehicle: { license_plate: vehiclePlateNo },
+      },
+      relations: ['vehicle', 'customer'],
+    });
+
+    if (existingBooking) {
+      throw new NotFoundException(
+        'This vehicle is already linked to another booking.',
+        '',
+      );
+    }
+
+    // Ensure the vehicle belongs to the customer
+    if (vehicle.customer.id !== customer.id) {
+      throw new NotFoundException(
+        'This vehicle does not belong to the specified customer.',
+        '',
+      );
+    }
+
     const booking = this.BookingRepository.create({
       ...createBookingDto,
-      customer,
-      vendor,
-      service,
-      vehicle,
+      customer: customer,
+      vendor: vendor,
+      service: service,
+      vehicle: vehicle,
+      duration: createBookingDto.duration
+        ? Number(createBookingDto.duration)
+        : undefined,
     });
 
     return this.BookingRepository.save(booking);
   }
 
-  async findAll(search?: string) {
-    if (search) {
-      return this.BookingRepository.createQueryBuilder('booking')
-        .leftJoinAndSelect('booking.customer', 'customer')
-        .leftJoinAndSelect('booking.vendor', 'vendor')
-        .leftJoinAndSelect('booking.service', 'service')
-        .leftJoinAndSelect('booking.vehicle', 'vehicle')
-        .where('booking.id = :search', { search })
-        .orWhere('customer.firstname = :search', { search })
-        .orWhere('vendor.name = :search', { search })
-        .orWhere('service.name = :search', { search })
-        .getMany();
-    }
-    return this.BookingRepository.find({
+  async findAll() {
+    const bookings = await this.BookingRepository.find({
       relations: ['customer', 'vendor', 'service', 'vehicle'],
+    });
+    return bookings.map((booking) => {
+      return {
+        ...booking,
+        customer: booking.customer.id,
+        vendor: booking.vendor.business_name,
+        service: booking.service.name,
+        vehicle: booking.vehicle.license_plate,
+      };
     });
   }
 
+  async findByCustomerId(customerId: string) {
+    const bookings = await this.BookingRepository.find({
+      where: { customer: { id: customerId } },
+      relations: ['customer', 'vendor', 'service', 'vehicle'],
+    });
+    if (bookings.length === 0) {
+      throw new NotFoundException(
+        `No bookings found for customer ID ${customerId}`,
+      );
+    }
+    return bookings.map((booking) => {
+      return {
+        ...booking,
+        customer: booking.customer.id,
+        vendor: booking.vendor.business_name,
+        service: booking.service.name,
+        vehicle: booking.vehicle.license_plate,
+      };
+    });
+  }
+  // findbyvendorid or name
+  async findByVendorId(vendorId: string) {
+    const bookings = await this.BookingRepository.find({
+      where: { vendor: { id: vendorId } },
+      relations: ['customer', 'vendor', 'service', 'vehicle'],
+    });
+    if (bookings.length === 0) {
+      throw new NotFoundException(
+        `No bookings found for vendor ID ${vendorId}`,
+        '',
+      );
+    }
+    return bookings.map((booking) => {
+      return {
+        ...booking,
+        customer: booking.customer.id,
+        // vendor: booking.vendor.business_name,
+        service: booking.service.name,
+        vehicle: booking.vehicle.license_plate,
+      };
+    });
+  }
   async findOne(id: number) {
     const booking = await this.BookingRepository.findOne({
       where: { id: id.toString() },

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,7 +31,7 @@ export class VehiclesService {
       select: ['id'],
     });
     if (existingVehicle) {
-      throw new Error(
+      throw new BadRequestException(
         `Vehicle with license plate ${createVehicleDto.license_plate} already exists`,
       );
     }
@@ -82,6 +86,7 @@ export class VehiclesService {
       throw new NotFoundException(`Vehicle with ID ${id} not found`);
     }
     const { customer, bookings, reviews, ...vehicleWithoutRelations } = vehicle;
+
     return {
       ...vehicleWithoutRelations,
       customer: customer
@@ -91,7 +96,29 @@ export class VehiclesService {
       reviews: reviews.map((review) => ({ id: review.id })),
     };
   }
-
+  async findByCustomerId(customerId: string) {
+    const vehicles = await this.vehicleRepository.find({
+      where: { customer: { id: customerId } },
+      relations: ['customer', 'bookings', 'reviews'],
+    });
+    if (vehicles.length === 0) {
+      throw new NotFoundException(
+        `No vehicles found for customer ID ${customerId}`,
+      );
+    }
+    return vehicles.map((vehicle) => {
+      const { customer, bookings, reviews, ...vehicleWithoutRelations } =
+        vehicle;
+      return {
+        ...vehicleWithoutRelations,
+        customer: customer
+          ? { id: customer.id, phone_number: customer.phone_number }
+          : null,
+        bookings: bookings.map((booking) => ({ id: booking.id })),
+        reviews: reviews.map((review) => ({ id: review.id })),
+      };
+    });
+  }
   async update(id: string, updateVehicleDto: UpdateVehicleDto) {
     const vehicle = await this.vehicleRepository.findOne({
       where: { id },
@@ -113,12 +140,14 @@ export class VehiclesService {
       where: { id },
       relations: ['customer', 'bookings', 'reviews'],
     });
+
     if (!vehicle) {
       throw new NotFoundException(`Vehicle with ID ${id} not found`);
     }
 
-    // Remove the vehicle
-    await this.vehicleRepository.remove(vehicle);
-    return `Vehicle with ID ${id} has been removed successfully`;
+    // Soft delete (just mark it as deleted)
+    await this.vehicleRepository.update(id, { is_deleted: true });
+
+    return `Vehicle with ID ${id} has been soft deleted successfully`;
   }
 }

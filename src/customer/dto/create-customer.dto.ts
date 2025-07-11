@@ -15,11 +15,11 @@ export class CreateCustomerDto {
   })
   @IsString()
   address: string; // Physical address of the customer
-  @ApiProperty({
-    type: String,
-    description: 'Vehicle ID associated with the customer',
-    example: '67890',
-  })
-  @IsString()
-  vehicle_id: string; // ID of the vehicle associated with the customer
+  // @ApiProperty({
+  //   type: String,
+  //   description: 'Vehicle ID associated with the customer',
+  //   example: '67890',
+  // })
+  // @IsString()
+  // vehicle_id: string; // ID of the vehicle associated with the customer
 }

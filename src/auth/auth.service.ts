@@ -71,7 +71,7 @@ export class AuthService {
       user.password,
     );
     if (!foundPassword) {
-      throw new NotFoundException('Invalid password');
+      throw new UnauthorizedException('Invalid password');
     }
     const { accessToken, refreshToken } = await this.getTokens(
       Number(user.id),
@@ -79,7 +79,17 @@ export class AuthService {
       user.role,
     );
     await this.saveRefreshToken(Number(user.id), refreshToken);
-    return { accessToken, refreshToken };
+    return {
+      user: {
+        id: user.id,
+        role: user.role,
+        email: user.email,
+        firstname: `${user.firstName}`,
+        lastname: `${user.lastName}`,
+      },
+      accessToken,
+      refreshToken,
+    };
   }
 
   async signOut(id: string) {

@@ -16,7 +16,7 @@ export class Service {
   @PrimaryGeneratedColumn()
   id: string; // Unique identifier for the service
 
-  @Column({ unique: true })
+  @Column()
   name: string; // Name of the service
 
   @Column()

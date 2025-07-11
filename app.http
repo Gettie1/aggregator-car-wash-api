@@ -1,8 +1,8 @@
-@url=http://localhost:3000
+@url=http://localhost:4001
 
 
 @refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTIzMjQ5LCJleHAiOjE3NTE1MjQxNDl9.EbUk3H3VLT2GPNpKGX53b6zLv61y5yAsdBwDh6ng3wY
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTQyODUxLCJleHAiOjE3NTE1NDM3NTF9.giYt-amT5TpEqXVoNDYf-CJ5ay5-31FfRkIbCbu1Z7E
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiZ2V0cnVkZUBnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTE5OTkwODQsImV4cCI6MTc1MjAwMjY4NH0.n5Kev16LoXFw4i9b7paX_MRtzJMWHhNC0QSQdhRStFY
 
 
 @admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0LCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTU0MzE4NywiZXhwIjoxNzUxNTQ0MDg3fQ.0ovBnvKZgQh4zunVqx2ReVVQtN10XaEKtXocKRClWX0
@@ -13,7 +13,7 @@ POST {{url}}/auth/signin
 Content-Type: application/json
 
 {
-  "email": "admin@gmail.com",
+  "email": "getrude@gmail.com",
   "password": "admin123"
 }
 
@@ -23,19 +23,20 @@ POST {{url}}/profile
 Content-Type: application/json
 
 {
-  "firstName": "admin",
-  "lastName": "Smith",
-  "email": "admin@gmail.com",
-  "password": "admin123", 
-  "role": "admin",
-  "phone": "0987654321"
+  "firstName": "customer",
+  "lastName": "Christine",
+  "email": "customer@gmail.com",
+  "password": "customer123", 
+  "role": "customer",
+  "phone": "1234567890"
 }
 #### GET ALL PROFILES ####
 GET {{url}}/profile
-Authorization: Bearer {{admin_token}}
+Authorization: Bearer {{accessToken}}
 
 #### GET PROFILE BY ID ####
-GET {{url}}/profile/4
+GET {{url}}/profile/3
+Authorization: Bearer {{accessToken}}
 
 ###  UPDATE PROFILE BY ID ###
 PATCH {{url}}/profile/1
@@ -59,15 +60,16 @@ Content-Type: application/json
 
 { 
   "profileId": "5",
-  "business_name": "Super Clean Car Wash",
-  "phone": "1234567890",
-  "tax_id": "123456789",
+  "business_name": "June's Car Wash",
+  "phone": "0123456789",
+  "tax_id": "0987654321",
   "business_address": "456 Elm St, City, Country",
   "status": "active"
 
 }
 #### GET ALL VENDORS ####
 GET {{url}}/vendors
+Authorization: Bearer {{accessToken}}
 
 #### GET VENDOR BY ID ####
 GET {{url}}/vendors/2
@@ -92,18 +94,18 @@ POST {{url}}/customer
 Content-Type: application/json
 
 {
-  "profileId":"5",
-  "phoneNumber":"1278345690",
-  "address": "123456789",
-  "vehicle_id": "2"
-
+  "profileId":"4",
+  "phoneNumber":"12745690",
+  "address": "123456789"
 }
 
 #### GET ALL CUSTOMERS ####
 GET {{url}}/customer
+Authorization:  Bearer {{accessToken}}
 
 #### GET CUSTOMER BY ID ####
-GET {{url}}/customer/1
+GET {{url}}/customer/3
+Authorization: Bearer {{accessToken}}
 
 #### UPDATE CUSTOMER BY ID ###
 PATCH {{url}}/customer/2
@@ -148,9 +150,9 @@ Content-Type: application/json
 
 {
   "customerId": "2",
-  "serviceId": "3",
-  "vendorId": "2",
-  "vehicleId": "2",
+  "serviceName": "Premium Wash",
+  "vendorName": "June's Car Wash",
+  "vehiclePlateNo": "ABC1234",
   "duration": "60",
   "location": "123 Main St, City, Country",
   "scheduled_at": "2023-10-01T10:00:00Z",
@@ -163,6 +165,9 @@ GET {{url}}/bookings
 
 #### GET BOOKING BY ID ####
 GET {{url}}/bookings/1
+
+#### GET BOOKINGS BY Vendor ID ####
+GET {{url}}/bookings/vendor/2
 
 #### UPDATE BOOKING BY ID ####
 PATCH {{url}}/bookings/1
@@ -178,14 +183,15 @@ DELETE {{url}}/bookings/1
 #### CREATE NEW VEHICLE ####
 POST {{url}}/vehicles
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
-  "customer_id": "7",
-  "make": "Toyota",
-  "model": "Camry",
-  "year": 2020,
-  "color": "Blue",
-  "license_plate": "ABC1234"
+  "customer_id": "1",
+  "make": "Audi",
+  "model": "A4",
+  "year": 2022,
+  "color": "Black",
+  "license_plate": "jkl1234"
 } 
 
 #### GET ALL VEHICLES ####
@@ -214,8 +220,8 @@ POST {{url}}/services
 Content-Type: application/json
 
 {
-  "name": "simple wash",
-  "description": "A basic wash service",
+  "name": "Premium Wash",
+  "description": " A premium wash service with extra care",
   "price": "29.99",
   "duration": "60",
   "vendorId": "2"
@@ -226,6 +232,9 @@ GET {{url}}/services
 
 #### GET SERVICE BY ID ####
 GET {{url}}/services/3
+
+#### GET SERVICES BY VENDOR ID ####
+GET {{url}}/services/vendor/1
 
 #### UPDATE SERVICE BY ID ####
 PATCH {{url}}/services/3
@@ -246,11 +255,11 @@ POST {{url}}/reviews
 Content-Type: application/json
 
 {
-  "customer_id": "2",
-  "vendor_id": "2",
-  "booking_id": "1",
+  "customer_id": "1",
+  "vendor_id": "1",
+  "booking_id": "2",
   "vehicle_id": "2",
-  "service_id": "3",
+  "service_id": "1",
   "rating": "5",
   "comment": "Great service!"
 }
