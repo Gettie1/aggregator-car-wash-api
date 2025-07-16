@@ -8,12 +8,20 @@ import { Vehicle } from 'src/vehicles/entities/vehicle.entity';
 import { Vendor } from 'src/vendors/entities/vendor.entity';
 import { Service } from 'src/services/entities/service.entity';
 import { Booking } from 'src/bookings/entities/booking.entity';
+import { Customer } from 'src/customer/entities/customer.entity';
 // import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Module({
   imports: [
     DatabaseModule,
-    TypeOrmModule.forFeature([Review, Vehicle, Vendor, Service, Booking]),
+    TypeOrmModule.forFeature([
+      Review,
+      Vehicle,
+      Vendor,
+      Service,
+      Booking,
+      Customer,
+    ]),
   ],
   controllers: [ReviewsController],
   providers: [ReviewsService],

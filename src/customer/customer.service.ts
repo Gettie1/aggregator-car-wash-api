@@ -94,6 +94,8 @@ export class CustomerService {
               id: customerData.id,
               phone_number: customerData.phone_number,
               address: customerData.address,
+              created_at: customerData.created_at,
+              updated_at: customerData.updated_at,
             }
           : null,
       };

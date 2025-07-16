@@ -18,8 +18,8 @@ export class Booking {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column('int')
-  duration: number;
+  // @Column('int')
+  // duration: number;
 
   @Column()
   location: string;

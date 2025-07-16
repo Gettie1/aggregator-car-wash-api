@@ -24,7 +24,7 @@ export class ServicesService {
     // check if service name already exists for the same vendor
     const existingService = await this.serviceRepository.findOne({
       where: {
-        vendor: { id: createServiceDto.vendorId },
+        vendor: { id: createServiceDto.vendorId.toString() },
         name: createServiceDto.name,
       },
       select: ['id'],
@@ -37,7 +37,7 @@ export class ServicesService {
     }
     // Find the vendor by ID
     const vendor = await this.vendorRepository.findOne({
-      where: { id: createServiceDto.vendorId },
+      where: { id: createServiceDto.vendorId.toString() },
       select: ['id', 'business_name'],
     });
     if (!vendor) {
@@ -92,11 +92,16 @@ export class ServicesService {
   // services.service.ts
   // get array of  services belonging to a vendor by profile id
 
-  async getServicesByProfileId(profileId: number) {
+  async getServicesByVendorId(vendorId: number) {
     const services = await this.serviceRepository.find({
-      where: { vendor: { id: profileId.toString() } },
+      where: { vendor: { id: vendorId.toString() } },
       relations: ['vendor', 'bookings', 'reviews'],
     });
+    if (services.length === 0) {
+      throw new BadRequestException(
+        `No services found for vendor with id ${vendorId}`,
+      );
+    }
     return services.map((service) => {
       const { vendor, bookings, reviews, ...serviceWithoutRelations } = service;
       return {

@@ -37,7 +37,7 @@ export class ProfileService {
       firstName: createProfileDto.firstName,
       lastName: createProfileDto.lastName,
       email: createProfileDto.email,
-      // phone: createProfileDto.phone, // Add the missing phone field
+      phone: createProfileDto.phone, // Add the missing phone field
       password: await this.hashData(createProfileDto.password), // Hash the password
       role: createProfileDto.role,
     };
@@ -71,7 +71,6 @@ export class ProfileService {
   async findOne(id: string): Promise<Partial<Profile>> {
     const profile = await this.profileRepository.findOne({
       where: { id: parseInt(id) },
-      // relations: ['student'], // Ensure to load the student relation
     });
     if (!profile) {
       throw new NotFoundException(`Profile with ID ${id} not found`);
@@ -84,7 +83,6 @@ export class ProfileService {
   ): Promise<Partial<Profile>> {
     const profile = await this.profileRepository.findOne({
       where: { id: parseInt(id) },
-      // relations: ['student'], // Ensure to load the student relation
     });
     if (!profile) {
       throw new NotFoundException(`Profile with ID ${id} not found`);

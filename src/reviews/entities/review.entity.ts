@@ -12,17 +12,18 @@ import { Booking } from 'src/bookings/entities/booking.entity';
 import { Vehicle } from 'src/vehicles/entities/vehicle.entity';
 import { Service } from 'src/services/entities/service.entity';
 import { Vendor } from 'src/vendors/entities/vendor.entity';
+import { Customer } from 'src/customer/entities/customer.entity';
 
 @Entity('reviews')
 export class Review {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column()
-  profile_id: string;
+  @Column({ nullable: true })
+  customer_id?: string;
 
   @Column()
-  booking_id: string; // Foreign key to Booking
+  booking_id?: string; // Foreign key to Booking
 
   @Column()
   vehicle_id?: string; // Optional foreign key to Vehicle
@@ -50,6 +51,14 @@ export class Review {
   @ManyToOne(() => Booking, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'booking_id' })
   booking: Relation<Booking>; // Booking being rated
+
+  @ManyToOne(() => Customer, (customer) => customer.reviews, {
+    eager: false,
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'customer_id' })
+  customer?: Relation<Customer>; // Optional customer who made the review
 
   @ManyToOne(() => Vehicle, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'vehicle_id' })

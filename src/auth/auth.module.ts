@@ -10,11 +10,13 @@ import { RolesGuard } from './guards/roles.guard';
 import { RtStrategy } from './strategies/rt.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AtStrategy } from './strategies/at.strategy';
+import { Customer } from 'src/customer/entities/customer.entity';
+import { Vendor } from 'src/vendors/entities/vendor.entity';
 
 @Module({
   imports: [
     DatabaseModule,
-    TypeOrmModule.forFeature([Profile]),
+    TypeOrmModule.forFeature([Profile, Vendor, Customer]),
     JwtModule.register({ global: true }),
     PassportModule,
   ],

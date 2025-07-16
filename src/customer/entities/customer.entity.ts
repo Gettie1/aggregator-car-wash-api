@@ -10,6 +10,7 @@ import {
   Relation,
 } from 'typeorm';
 import { Profile } from 'src/profile/entities/profile.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 
 @Entity()
 export class Customer {
@@ -32,7 +33,7 @@ export class Customer {
   })
   updated_at?: Date; // Timestamp when the customer was last updated
 
-  @OneToOne(() => Profile, { nullable: false })
+  @OneToOne(() => Profile, (profile) => profile.customer, { eager: true })
   @JoinColumn()
   profile: Relation<Profile>; // Reference to the User who is this customer
 
@@ -41,4 +42,6 @@ export class Customer {
 
   @OneToMany(() => Booking, (booking) => booking.customer)
   bookings: Relation<Booking[]>; // One-to-many relationship with the Booking entity
+  @OneToMany(() => Review, (review) => review.customer)
+  reviews: Relation<Review[]>; // One-to-many relationship with the Review entity
 }

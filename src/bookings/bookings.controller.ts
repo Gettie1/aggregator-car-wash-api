@@ -57,6 +57,14 @@ export class BookingsController {
   update(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
     return this.bookingsService.update(+id, updateBookingDto);
   }
+  @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
+  @Patch(':id/status')
+  updateBookingStatus(@Param('id') id: string, @Body('status') status: string) {
+    return this.bookingsService.updateBookingStatus(
+      +id,
+      status as 'pending' | 'confirmed' | 'cancelled',
+    );
+  }
   @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {

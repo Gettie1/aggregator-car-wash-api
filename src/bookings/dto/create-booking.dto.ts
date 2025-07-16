@@ -6,24 +6,27 @@ import { IsOptional, IsString } from 'class-validator';
 export class CreateBookingDto {
   @ApiProperty({ type: String, description: 'Customer ID', example: '12345' })
   @IsString()
-  customerId: string;
+  @IsOptional()
+  customerId?: string;
   @ApiProperty({ type: String, description: 'service name', example: '67890' })
   @IsString()
-  serviceName: string;
+  @IsOptional()
+  serviceName?: string;
   @ApiProperty({ type: String, description: 'Vendor ID', example: '54321' })
   @IsString()
-  vendorName: string;
+  @IsOptional()
+  vendorName?: string;
   @ApiProperty({ type: String, description: 'Vehicle ID', example: '98765' })
   @IsString()
   @IsOptional()
-  vehiclePlateNo: string;
-  @ApiProperty({
-    type: String,
-    description: 'Booking duration in minutes',
-    example: '60',
-  })
-  @IsString()
-  duration: string;
+  vehiclePlateNo?: string;
+  // @ApiProperty({
+  //   type: String,
+  //   description: 'Booking duration in minutes',
+  //   example: '60',
+  // })
+  // @IsString()
+  // duration: string;
   @ApiProperty({
     type: String,
     description: 'Booking location',

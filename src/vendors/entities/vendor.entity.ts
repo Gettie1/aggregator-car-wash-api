@@ -19,8 +19,6 @@ import {
 export class Vendor {
   @PrimaryGeneratedColumn()
   id: string;
-  @Column({ type: 'varchar', length: 50, unique: true })
-  profileId: string; // ID of the profile associated with the vendor
   @Column({ type: 'varchar', length: 255 })
   business_name: string; // Business name of the vendor
 
@@ -41,7 +39,7 @@ export class Vendor {
 
   // Relationships
   @OneToOne(() => Profile, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'profile_id' })
   profile: Relation<Profile>; // Reference to the User who is this vendor
 
   @OneToMany(() => Booking, (booking) => booking.vendor)

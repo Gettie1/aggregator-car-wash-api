@@ -48,14 +48,23 @@ export class ReviewsController {
   findByVehicleId(@Param('id') id: string) {
     return this.reviewsService.findByVehicleId(id);
   }
-
+  @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
+  @Get('vendor/:id')
+  findByVendorId(@Param('vendorId') vendorId: string) {
+    return this.reviewsService.findByVendorId(vendorId);
+  }
+  @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
+  @Get('customer/:id')
+  findByCustomerId(@Param('customerId') customerId: string) {
+    return this.reviewsService.findByCustomerId(customerId);
+  }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
     return this.reviewsService.update(id, updateReviewDto);
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.VENDOR, Role.CUSTOMER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reviewsService.remove(id);

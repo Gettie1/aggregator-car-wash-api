@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+// import { Type } from 'class-transformer';
+import { IsInt, IsNumber, IsString } from 'class-validator';
 
 export class CreateServiceDto {
   @ApiProperty({
@@ -7,8 +9,9 @@ export class CreateServiceDto {
     description: 'Vendor ID',
     example: 'vendor123',
   })
-  @IsString()
-  vendorId: string; // ID of the vendor providing the service
+  @Type(() => Number)
+  @IsInt()
+  vendorId: number; // ID of the vendor providing the service
   @ApiProperty({
     type: String,
     description: 'Name of the service',
@@ -28,13 +31,15 @@ export class CreateServiceDto {
     description: 'Price of the service',
     example: 29.99,
   })
-  @IsString()
-  price: string; // Price of the service
+  @Type(() => Number)
+  @IsNumber()
+  price: number; // Price of the service
   @ApiProperty({
     type: String,
     description: 'Duration of the service in minutes',
     example: 30,
   })
-  @IsString()
-  duration: string; // Duration of the service in minutes
+  @Type(() => Number)
+  @IsNumber()
+  duration: number; // Duration of the service in minutes
 }

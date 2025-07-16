@@ -6,16 +6,22 @@ import {
 import { CreateAuthDto } from './dto/login.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Profile } from 'src/profile/entities/profile.entity';
+import { Profile, Role } from 'src/profile/entities/profile.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import { Vendor } from 'src/vendors/entities/vendor.entity';
+import { Customer } from 'src/customer/entities/customer.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
+    @InjectRepository(Vendor)
+    private vendorRepository: Repository<Vendor>,
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
@@ -79,13 +85,34 @@ export class AuthService {
       user.role,
     );
     await this.saveRefreshToken(Number(user.id), refreshToken);
+    let extra = {};
+
+    if (user.role === Role.VENDOR) {
+      const vendor = await this.vendorRepository.findOne({
+        where: { profile: { id: user.id } },
+        relations: ['profile'],
+      });
+      if (vendor) extra = { vendorId: vendor.id };
+    }
+    console.log('vendor', extra);
+
+    if (user.role === Role.CUSTOMER) {
+      const customer = await this.customerRepository.findOne({
+        where: { profile: { id: user.id } },
+        relations: ['profile'],
+      });
+      if (customer) extra = { customerId: customer.id };
+    }
+
     return {
       user: {
         id: user.id,
         role: user.role,
         email: user.email,
+        phone: user.phone,
         firstname: `${user.firstName}`,
         lastname: `${user.lastName}`,
+        ...extra,
       },
       accessToken,
       refreshToken,

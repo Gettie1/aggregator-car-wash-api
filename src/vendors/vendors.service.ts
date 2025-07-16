@@ -13,7 +13,7 @@ import { Review } from 'src/reviews/entities/review.entity';
 import { Repository } from 'typeorm';
 import { Vendor } from './entities/vendor.entity';
 import { Role } from 'src/profile/entities/profile.entity';
-import { CreateProfileDto } from 'src/profile/dto/create-profile.dto';
+// import { CreateProfileDto } from 'src/profile/dto/create-profile.dto';
 // import { profile } from 'console';
 
 @Injectable()
@@ -32,64 +32,66 @@ export class VendorsService {
     private ratingRepository: Repository<Review>,
   ) {}
   async create(createVendorDto: CreateVendorDto) {
-    // Check if a vendor with the same business name already exists
-    const existingVendor = await this.profileRepository.findOne({
-      where: { vendor: { business_name: createVendorDto.business_name } },
-      select: ['id'],
-      relations: ['vendor'],
+    // Check if vendor with the business name already exists
+    const existingVendor = await this.vendorRepository.findOne({
+      where: { business_name: createVendorDto.business_name },
+      relations: ['profile'],
     });
+
     if (existingVendor) {
       throw new BadRequestException(
         `Vendor with business name ${createVendorDto.business_name} already exists`,
       );
     }
 
-    // You need to fetch or create a Profile entity before assigning it to the vendor
-    // For example, if you have a profileId in the DTO:
-    const profileEntity = await this.profileRepository.findOne({
-      where: {
-        id: Number(createVendorDto.profileId),
-        role: Role.VENDOR,
-      },
-      select: ['id', 'firstName', 'lastName', 'email'],
-      // relations: ['vendor'],
-    });
-    // create a new profile if it doesn't exist
+    let profile: Profile | null = null;
 
-    if (!profileEntity) {
-      const createProfileDto: CreateProfileDto = {
-        firstName: createVendorDto.firstName ?? '',
-        lastName: createVendorDto.lastName ?? '',
-        email: createVendorDto.email ?? '',
-        password: createVendorDto.password ?? '',
-        phone: createVendorDto.phone ?? '', // Uncomment if phone is part of the DTO
-        role: Role.VENDOR, // Set the role to VENDOR
-      };
-      // Create a new profile if it doesn't exist
-      const newProfile = this.profileRepository.create(createProfileDto);
-      await this.profileRepository.save(newProfile);
-      // Use the newly created profile as the profile entity
-      return this.vendorRepository.save(
-        this.vendorRepository.create({
-          business_name: createVendorDto.business_name,
-          tax_id: createVendorDto.tax_id,
-          business_address: createVendorDto.business_address,
-          status: createVendorDto.status || 'active', // Default status to 'active'
-          profile: newProfile,
-        }),
-      );
+    // 1. If profileId is provided, try to find it
+    if (createVendorDto.profileId) {
+      profile = await this.profileRepository.findOne({
+        where: {
+          id: +createVendorDto.profileId,
+          role: Role.VENDOR,
+        },
+      });
+
+      if (!profile) {
+        throw new NotFoundException(
+          `Profile with ID ${createVendorDto.profileId} not found`,
+        );
+      }
     }
-    // Create a new Vendor entity
-    const newVendor = this.vendorRepository.create({
+
+    // 2. If no existing profile found, create one
+    if (!profile) {
+      const newProfile = this.profileRepository.create({
+        firstName: createVendorDto.firstName,
+        lastName: createVendorDto.lastName,
+        email: createVendorDto.email,
+        password: createVendorDto.password,
+        phone: createVendorDto.phone,
+        role: Role.VENDOR,
+      });
+      profile = await this.profileRepository.save(newProfile);
+    }
+
+    // 3. Create and link the vendor
+    const vendor = this.vendorRepository.create({
       business_name: createVendorDto.business_name,
       tax_id: createVendorDto.tax_id,
       business_address: createVendorDto.business_address,
-      status: createVendorDto.status || 'active', // Default status to 'active'
-      profile: profileEntity,
+      status: createVendorDto.status || 'active',
+      profile: profile,
     });
-    return this.vendorRepository.save(newVendor);
-  }
 
+    await this.vendorRepository.save(vendor);
+
+    // 4. Return combined result
+    return {
+      ...vendor,
+      profile,
+    };
+  }
   async findAll(search?: string) {
     let vendors: Profile[];
     if (search) {

@@ -28,6 +28,7 @@ export class ServicesController {
   @Roles(Role.ADMIN, Role.VENDOR)
   @Post()
   create(@Body() createServiceDto: CreateServiceDto) {
+    console.log('📥 Received:', createServiceDto);
     return this.servicesService.create(createServiceDto);
   }
   @Roles(Role.ADMIN, Role.VENDOR)
@@ -41,9 +42,9 @@ export class ServicesController {
     return this.servicesService.findOne(+id);
   }
   @Roles(Role.ADMIN, Role.VENDOR)
-  @Get('profile/:profileId')
-  getServicesByVendorId(@Param('profileId') profileId: string) {
-    return this.servicesService.getServicesByProfileId(+profileId);
+  @Get('vendor/:vendorId')
+  getServicesByVendorId(@Param('vendorId') vendorId: string) {
+    return this.servicesService.getServicesByVendorId(+vendorId);
   }
   @Roles(Role.ADMIN, Role.VENDOR)
   @Patch(':id')

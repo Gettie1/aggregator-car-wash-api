@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,8 +32,13 @@ export class BookingsService {
     private VehicleRepository: Repository<Vehicle>,
   ) {}
   async create(createBookingDto: CreateBookingDto) {
-    const { customerId, vendorName, serviceName, vehiclePlateNo } =
-      createBookingDto;
+    const {
+      customerId,
+      vendorName,
+      serviceName,
+      vehiclePlateNo,
+      scheduled_at,
+    } = createBookingDto;
 
     const customer = await this.CustomerRepository.findOneBy({
       id: customerId,
@@ -52,11 +61,32 @@ export class BookingsService {
       throw new NotFoundException('Service not found');
     }
 
-    const vehicle = await this.VehicleRepository.findOneBy({
-      license_plate: vehiclePlateNo,
+    const vehicle = await this.VehicleRepository.findOne({
+      where: { license_plate: vehiclePlateNo },
+      relations: ['customer'],
     });
     if (!vehicle) {
       throw new NotFoundException('Vehicle not found');
+    }
+
+    // Check if the scheduled time already exists for any booking
+    // import { ConflictException } from '@nestjs/common'; // at the top if not already
+
+    // Check if vendor already has a booking at the same time
+    const existingTimeBooking = await this.BookingRepository.createQueryBuilder(
+      'booking',
+    )
+      .innerJoin('booking.vendor', 'vendor')
+      .where('booking.scheduled_at = :scheduledAt', {
+        scheduledAt: scheduled_at,
+      })
+      .andWhere('vendor.business_name = :vendorName', { vendorName })
+      .getOne();
+
+    if (existingTimeBooking) {
+      throw new ConflictException(
+        `Vendor '${vendorName}' already has a booking at ${scheduled_at instanceof Date ? scheduled_at.toISOString() : scheduled_at}. Please choose a different time.`,
+      );
     }
 
     // Ensure the vehicle is not already booked by another customer
@@ -88,9 +118,6 @@ export class BookingsService {
       vendor: vendor,
       service: service,
       vehicle: vehicle,
-      duration: createBookingDto.duration
-        ? Number(createBookingDto.duration)
-        : undefined,
     });
 
     return this.BookingRepository.save(booking);
@@ -147,7 +174,7 @@ export class BookingsService {
       return {
         ...booking,
         customer: booking.customer.id,
-        // vendor: booking.vendor.business_name,
+        vendor: booking.vendor.business_name,
         service: booking.service.name,
         vehicle: booking.vehicle.license_plate,
       };
@@ -182,7 +209,21 @@ export class BookingsService {
     const updatedBooking = Object.assign(booking, updateBookingDto);
     return this.BookingRepository.save(updatedBooking);
   }
+  async updateBookingStatus(
+    id: number,
+    status: 'pending' | 'confirmed' | 'cancelled',
+  ) {
+    const booking = await this.BookingRepository.findOne({
+      where: { id: id.toString() },
+      relations: ['customer', 'vendor', 'service', 'vehicle'],
+    });
+    if (!booking) {
+      throw new NotFoundException(`Booking with id ${id} not found`);
+    }
 
+    booking.status = status;
+    return this.BookingRepository.save(booking);
+  }
   async remove(id: number) {
     const booking = await this.BookingRepository.findOne({
       where: { id: id.toString() },

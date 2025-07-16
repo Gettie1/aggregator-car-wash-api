@@ -8,6 +8,7 @@ import { Service } from 'src/services/entities/service.entity';
 import { Vendor } from 'src/vendors/entities/vendor.entity';
 import { Vehicle } from 'src/vehicles/entities/vehicle.entity';
 import { Booking } from 'src/bookings/entities/booking.entity';
+import { Customer } from 'src/customer/entities/customer.entity';
 
 @Injectable()
 export class ReviewsService {
@@ -22,10 +23,24 @@ export class ReviewsService {
     private vehicleRepository: Repository<Vehicle>,
     @InjectRepository(Booking)
     private bookingRepository: Repository<Booking>,
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
   ) {}
   async create(createRatingDto: CreateReviewDto) {
     // Validate and fetch related entities if necessary
-    const { booking_id, vehicle_id, service_id, vendor_id } = createRatingDto;
+    const { customer_id, booking_id, vehicle_id, service_id, vendor_id } =
+      createRatingDto;
+
+    const customer = await this.customerRepository.findOne({
+      where: { id: customer_id },
+      select: ['id'],
+      relations: ['profile'],
+    });
+    if (!customer) {
+      throw new NotFoundException(
+        `Customer with ID ${customer_id} does not exist`,
+      );
+    }
 
     // Fetch the booking to ensure it exists
     const booking = await this.bookingRepository.findOne({
@@ -88,13 +103,16 @@ export class ReviewsService {
 
   async findAll() {
     const reviews = await this.reviewRepository.find({
-      relations: ['vehicle', 'service', 'vendor'],
+      relations: ['vehicle', 'service', 'vendor', 'customer'],
     });
 
     return reviews.map((review) => {
       const { vehicle, service, vendor, ...reviewWithoutRelations } = review;
       return {
         ...reviewWithoutRelations,
+        // customer: customer && typeof customer === 'object' && 'profile' in customer && customer.profile && typeof customer.profile === 'object' && 'email' in customer.profile
+        //   ? { id: customer.id, email: (customer.profile as { email?: string }).email }
+        //   : null,
         vehicle: vehicle
           ? { id: vehicle.id, license_plate: vehicle.license_plate }
           : null,
@@ -175,7 +193,37 @@ export class ReviewsService {
       };
     });
   }
-
+  async findByVendorId(vendorId: string) {
+    const reviews = await this.reviewRepository.find({
+      where: { vendor: { id: vendorId } },
+      relations: ['vehicle', 'service', 'vendor', 'customer.profile'],
+    });
+    if (reviews.length === 0) {
+      throw new NotFoundException(`No reviews found for vendor ID ${vendorId}`);
+    }
+    return reviews.map((review) => {
+      const { vehicle, service, vendor, customer, ...reviewWithoutRelations } =
+        review;
+      return {
+        ...reviewWithoutRelations,
+        customer: customer?.profile
+          ? {
+              id: customer.id,
+              firstName: customer.profile.firstName,
+              lastName: customer.profile.lastName,
+              email: customer.profile.email,
+            }
+          : null,
+        vehicle: vehicle
+          ? { id: vehicle.id, license_plate: vehicle.license_plate }
+          : null,
+        service: service ? { id: service.id, name: service.name } : null,
+        vendor: vendor
+          ? { id: vendor.id, business_name: vendor.business_name }
+          : null,
+      };
+    });
+  }
   async update(id: string, updateReviewDto: UpdateReviewDto) {
     const review = await this.reviewRepository.findOne({
       where: { id },

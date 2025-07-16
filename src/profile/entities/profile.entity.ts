@@ -37,7 +37,8 @@ export class Profile {
   @Exclude()
   @Column({ type: 'text', nullable: true, default: null })
   hashedRefreshToken?: string; // Hashed refresh token for the user
-
+  @Column({ nullable: true, default: false })
+  is_deleted?: boolean; // Flag to indicate if the profile is deleted
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at?: Date; // Timestamp when the profile was created
 
