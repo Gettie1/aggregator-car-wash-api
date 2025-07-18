@@ -61,7 +61,7 @@ export class CreateVendorDto {
     example: '123 Main St, Springfield, USA',
   })
   @IsString()
-  business_address: string; // Business address of the vendor
+  address: string; // Business address of the vendor
   @ApiProperty({
     type: String,
     description: 'Status of the vendor',

@@ -30,13 +30,13 @@ export class CustomerService {
 
   async create(createCustomerDto: CreateCustomerDto) {
     const existingCustomer = await this.profileRepository.findOne({
-      where: { customer: { phone_number: createCustomerDto.phoneNumber } },
+      where: { customer: { phone_number: createCustomerDto.phone } },
       select: ['id'],
       relations: ['customer'],
     });
     if (existingCustomer) {
       throw new BadRequestException(
-        `Customer with ${createCustomerDto.phoneNumber} already exists`,
+        `Customer with ${createCustomerDto.phone} already exists`,
       );
     }
     const profileEntity = await this.profileRepository.findOne({
@@ -51,7 +51,7 @@ export class CustomerService {
       throw new BadRequestException('Profile not found for the given ID');
     }
     const newCustomer = this.customerRepository.create({
-      phone_number: createCustomerDto.phoneNumber,
+      phone_number: createCustomerDto.phone,
       address: createCustomerDto.address,
       profile: profileEntity,
     });

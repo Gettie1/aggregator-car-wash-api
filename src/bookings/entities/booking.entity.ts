@@ -21,8 +21,8 @@ export class Booking {
   // @Column('int')
   // duration: number;
 
-  @Column()
-  location: string;
+  // @Column()
+  // location: string;
 
   @Column({ type: 'timestamp' })
   scheduled_at: Date;

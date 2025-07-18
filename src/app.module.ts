@@ -19,6 +19,7 @@ import { LoggerMiddleware } from './logger.middleware';
 import { Profile } from './profile/entities/profile.entity';
 // import { APP_GUARD } from '@nestjs/core';
 import { SeedModule } from './seed/seed.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { SeedModule } from './seed/seed.module';
     AuthModule,
     LogsModule,
     SeedModule,
+    ChatModule,
   ],
   providers: [
     // { provide: APP_GUARD, useClass: AtGuard },

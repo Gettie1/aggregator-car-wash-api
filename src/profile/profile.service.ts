@@ -84,14 +84,23 @@ export class ProfileService {
     const profile = await this.profileRepository.findOne({
       where: { id: parseInt(id) },
     });
+
     if (!profile) {
       throw new NotFoundException(`Profile with ID ${id} not found`);
     }
-    // Update the profile with the new data
+
+    // 🚫 Prevent role from being changed once set
+    if (updateProfileDto.role && updateProfileDto.role !== profile.role) {
+      throw new BadRequestException('Role cannot be changed once set.');
+    }
+
+    // ✅ Update all other fields
     Object.assign(profile, updateProfileDto);
-    const updateProfile = await this.profileRepository.save(profile);
-    return this.excludePassword(updateProfile);
+
+    const updatedProfile = await this.profileRepository.save(profile);
+    return this.excludePassword(updatedProfile);
   }
+
   async remove(id: string): Promise<string> {
     const profile = await this.profileRepository.findOne({
       where: { id: parseInt(id) },

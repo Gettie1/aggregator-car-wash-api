@@ -7,7 +7,7 @@ export class CreateCustomerDto {
   profileId: string;
   @ApiProperty({ type: String, description: 'Customer Phone Number' })
   @IsString()
-  phoneNumber: string; // Phone number of the customer
+  phone: string; // Phone number of the customer
   @ApiProperty({
     type: String,
     description: 'Address of the customer',

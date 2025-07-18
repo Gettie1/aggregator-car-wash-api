@@ -2,7 +2,7 @@
 
 
 @refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTIzMjQ5LCJleHAiOjE3NTE1MjQxNDl9.EbUk3H3VLT2GPNpKGX53b6zLv61y5yAsdBwDh6ng3wY
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUyNjU4MjIyLCJleHAiOjE3NTI2NjE4MjJ9.38GbnESA9vAwcn9_LVVZpYAjQGOtWVwAwyvPREWhgRs
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUyNzgyNTU4LCJleHAiOjE3NTI3ODYxNTh9.Y_Mn2avjrhk0uX6KXRA0KE60xCyEPrZ_0m4t_EGUlcg
 
 @admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0LCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTU0MzE4NywiZXhwIjoxNzUxNTQ0MDg3fQ.0ovBnvKZgQh4zunVqx2ReVVQtN10XaEKtXocKRClWX0
 @vendor_token =
@@ -38,7 +38,7 @@ GET {{url}}/profile/2
 Authorization: Bearer {{accessToken}}
 
 ###  UPDATE PROFILE BY ID ###
-PATCH {{url}}/profile/10
+PATCH {{url}}/profile/2
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -222,7 +222,7 @@ Content-Type: application/json
 }
 
 #### DELETE VEHICLE BY ID ####
-DELETE {{url}}/vehicles/1
+DELETE {{url}}/vehicles/4
 
 #### CREATE NEW SERVICE ####
 POST {{url}}/services

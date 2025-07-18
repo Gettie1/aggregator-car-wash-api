@@ -138,16 +138,22 @@ export class VehiclesService {
   async remove(id: string) {
     const vehicle = await this.vehicleRepository.findOne({
       where: { id },
-      relations: ['customer', 'bookings', 'reviews'],
+      relations: ['bookings'],
     });
 
     if (!vehicle) {
       throw new NotFoundException(`Vehicle with ID ${id} not found`);
     }
 
-    // Soft delete (just mark it as deleted)
-    await this.vehicleRepository.update(id, { is_deleted: true });
+    // Delete related bookings first
+    if (vehicle.bookings && vehicle.bookings.length > 0) {
+      const bookingIds = vehicle.bookings.map((booking) => booking.id);
+      await this.bookingRepository.delete(bookingIds);
+    }
 
-    return `Vehicle with ID ${id} has been soft deleted successfully`;
+    // Delete the vehicle itself
+    await this.vehicleRepository.delete(id);
+
+    return `Vehicle with ID ${id} and its related bookings have been deleted successfully`;
   }
 }

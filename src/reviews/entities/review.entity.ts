@@ -25,7 +25,7 @@ export class Review {
   @Column()
   booking_id?: string; // Foreign key to Booking
 
-  @Column()
+  @Column({ nullable: true })
   vehicle_id?: string; // Optional foreign key to Vehicle
 
   @Column()

@@ -78,8 +78,8 @@ export class VendorsService {
     // 3. Create and link the vendor
     const vendor = this.vendorRepository.create({
       business_name: createVendorDto.business_name,
-      tax_id: createVendorDto.tax_id,
-      business_address: createVendorDto.business_address,
+      taxId: createVendorDto.tax_id,
+      address: createVendorDto.address,
       status: createVendorDto.status || 'active',
       profile: profile,
     });
@@ -123,7 +123,7 @@ export class VendorsService {
       relations: [
         'profile',
         // 'vendor.bookings',
-        // 'vendor.services',
+        'services',
         // 'vendor.reviews',
       ],
     });
