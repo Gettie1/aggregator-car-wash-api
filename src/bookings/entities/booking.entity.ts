@@ -12,29 +12,39 @@ import {
   PrimaryGeneratedColumn,
   Relation,
 } from 'typeorm';
+import { PaymentMethod, PaymentStatus } from '../dto/create-booking.dto';
+import { Payment } from 'src/payments/entities/payment.entity';
 
+export enum BookingStatus {
+  PENDING = 'pending',
+  CONFIRMED = 'confirmed',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+}
 @Entity()
 export class Booking {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   // @Column('int')
   // duration: number;
 
   // @Column()
   // location: string;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  price?: number; // Price of the booking
 
-  @Column({ type: 'timestamp' })
-  scheduled_at: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  scheduled_at?: Date;
 
-  @Column()
-  status: string; // Status of the booking, e.g., "pending", "confirmed", "completed", "cancelled"
+  @Column({ type: 'enum', enum: BookingStatus, default: BookingStatus.PENDING })
+  status: BookingStatus; // Status of the booking, e.g., "pending", "confirmed", "completed", "cancelled"
+
+  @Column({ nullable: true, default: PaymentStatus.PENDING })
+  payment_status?: PaymentStatus; // Payment status, e.g., "paid", "unpaid"
 
   @Column({ nullable: true })
-  payment_status?: string; // Payment status, e.g., "paid", "unpaid"
-
-  @Column({ nullable: true })
-  payment_method?: string;
+  payment_method?: PaymentMethod;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at?: Date;
@@ -45,6 +55,9 @@ export class Booking {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updated_at?: Date;
+
+  @OneToMany(() => Payment, (payment) => payment.booking)
+  payments: Payment[];
 
   @ManyToOne(() => Customer, (customer) => customer.bookings)
   @JoinColumn()

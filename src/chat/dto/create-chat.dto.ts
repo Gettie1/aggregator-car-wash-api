@@ -19,6 +19,12 @@ export class MessageDto {
 
 export class CreateChatDto {
   @ApiProperty({
+    description: 'Unique identifier for the chat session',
+    example: '12345',
+  })
+  @IsString()
+  id: string;
+  @ApiProperty({
     description: 'Array of messages between user and assistant',
     type: [MessageDto],
   })

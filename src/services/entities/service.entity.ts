@@ -14,7 +14,7 @@ import {
 @Entity()
 export class Service {
   @PrimaryGeneratedColumn()
-  id: string; // Unique identifier for the service
+  id: number; // Unique identifier for the service
 
   @Column()
   name: string; // Name of the service

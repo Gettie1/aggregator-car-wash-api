@@ -1,22 +1,47 @@
 // import { IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+
+export enum PaymentMethod {
+  CASH = 'cash',
+  CREDIT_CARD = 'credit_card',
+  MOBILE_MONEY = 'mobile_money',
+}
+
+export enum PaymentStatus {
+  PENDING = 'pending',
+  PAID = 'paid',
+  FAILED = 'failed',
+  REFUNDED = 'refunded',
+}
 
 export class CreateBookingDto {
-  @ApiProperty({ type: String, description: 'Customer ID', example: '12345' })
-  @IsString()
+  @ApiProperty({ type: String, description: 'Customer ID', example: 123 })
+  @IsNumber()
   @IsOptional()
-  customerId?: string;
-  @ApiProperty({ type: String, description: 'service name', example: '67890' })
+  customerId?: number;
+  @ApiProperty({
+    type: String,
+    description: 'service name',
+    example: 'Car Wash',
+  })
   @IsString()
   @IsOptional()
   serviceName?: string;
-  @ApiProperty({ type: String, description: 'Vendor ID', example: '54321' })
+  @ApiProperty({
+    type: String,
+    description: 'Vendor Name',
+    example: "June's Car Wash",
+  })
   @IsString()
   @IsOptional()
   vendorName?: string;
-  @ApiProperty({ type: String, description: 'Vehicle ID', example: '98765' })
+  @ApiProperty({
+    type: String,
+    description: 'Vehicle Plate Number',
+    example: '98765',
+  })
   @IsString()
   @IsOptional()
   vehiclePlateNo?: string;
@@ -41,21 +66,21 @@ export class CreateBookingDto {
   })
   @IsString()
   scheduled_at: Date;
-  @ApiProperty({
-    type: String,
-    description: 'Booking status',
-    example: 'pending',
-  })
-  @IsString()
-  status: string;
-  @ApiProperty({ type: String, description: 'Payment status', example: 'paid' })
-  @IsString()
-  payment_status?: string;
+  // @ApiProperty({
+  //   type: String,
+  //   description: 'Booking status',
+  //   example: 'pending',
+  // })
+  // @IsString()
+  // status: string;
+  // @ApiProperty({ type: String, description: 'Payment status', example: 'paid' })
+  // @IsEnum(PaymentStatus)
+  // payment_status?: PaymentStatus;
   @ApiProperty({
     type: String,
     description: 'Payment method',
     example: 'credit_card',
   })
-  @IsString()
-  payment_method?: string;
+  @IsEnum(PaymentMethod)
+  payment_method?: PaymentMethod;
 }

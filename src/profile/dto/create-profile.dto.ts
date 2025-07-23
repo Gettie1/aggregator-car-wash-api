@@ -42,6 +42,14 @@ export class CreateProfileDto {
   email: string; // Email address of the user
   @ApiProperty({
     type: String,
+    description: 'Image URL for the user profile',
+    example: 'https://example.com/image.jpg',
+  })
+  @IsOptional()
+  @IsString()
+  image?: string; // Optional image URL for the user profile
+  @ApiProperty({
+    type: String,
     description: 'Role of the user',
     example: 'customer',
   })

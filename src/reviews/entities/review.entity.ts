@@ -17,24 +17,24 @@ import { Customer } from 'src/customer/entities/customer.entity';
 @Entity('reviews')
 export class Review {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ nullable: true })
-  customer_id?: string;
+  customer_id?: number;
 
   @Column()
-  booking_id?: string; // Foreign key to Booking
+  booking_id?: number; // Foreign key to Booking
 
   @Column({ nullable: true })
-  vehicle_id?: string; // Optional foreign key to Vehicle
+  vehicle_id?: number; // Optional foreign key to Vehicle
 
   @Column()
-  service_id?: string; // Optional foreign key to Service
+  service_id?: number; // Optional foreign key to Service
 
   @Column()
-  vendor_id?: string; // Optional foreign key to Vendor
+  vendor_id?: number; // Optional foreign key to Vendor
 
-  @Column({ type: 'int', width: 1 })
+  @Column({ type: 'int' })
   rating: number; // Rating value, e.g., 1 to 5 stars
 
   @Column({ type: 'text', nullable: true })

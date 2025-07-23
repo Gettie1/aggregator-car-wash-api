@@ -24,7 +24,7 @@ export class ServicesService {
     // check if service name already exists for the same vendor
     const existingService = await this.serviceRepository.findOne({
       where: {
-        vendor: { id: createServiceDto.vendorId.toString() },
+        vendor: { id: createServiceDto.vendorId },
         name: createServiceDto.name,
       },
       select: ['id'],
@@ -37,7 +37,7 @@ export class ServicesService {
     }
     // Find the vendor by ID
     const vendor = await this.vendorRepository.findOne({
-      where: { id: createServiceDto.vendorId.toString() },
+      where: { id: createServiceDto.vendorId },
       select: ['id', 'business_name'],
     });
     if (!vendor) {
@@ -94,7 +94,7 @@ export class ServicesService {
 
   async getServicesByVendorId(vendorId: number) {
     const services = await this.serviceRepository.find({
-      where: { vendor: { id: vendorId.toString() } },
+      where: { vendor: { id: vendorId } },
       relations: ['vendor', 'bookings', 'reviews'],
     });
     if (services.length === 0) {
@@ -124,7 +124,7 @@ export class ServicesService {
 
   async findOne(id: number) {
     const service = await this.serviceRepository.findOne({
-      where: { id: id.toString() },
+      where: { id: id },
       relations: ['vendor', 'bookings', 'reviews'],
     });
     if (!service) {
@@ -150,7 +150,7 @@ export class ServicesService {
 
   async update(id: number, updateServiceDto: UpdateServiceDto) {
     const service = await this.serviceRepository.findOne({
-      where: { id: id.toString() },
+      where: { id: id },
       relations: ['vendor', 'bookings', 'reviews'],
     });
     if (!service) {
@@ -180,7 +180,7 @@ export class ServicesService {
 
   async remove(id: number) {
     const service = await this.serviceRepository.findOne({
-      where: { id: id.toString() },
+      where: { id: id },
       relations: ['vendor', 'bookings', 'reviews'],
     });
     if (!service) {

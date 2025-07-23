@@ -77,7 +77,7 @@ export class VehiclesService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const vehicle = await this.vehicleRepository.findOne({
       where: { id },
       relations: ['customer', 'bookings', 'reviews'],
@@ -96,7 +96,7 @@ export class VehiclesService {
       reviews: reviews.map((review) => ({ id: review.id })),
     };
   }
-  async findByCustomerId(customerId: string) {
+  async findByCustomerId(customerId: number) {
     const vehicles = await this.vehicleRepository.find({
       where: { customer: { id: customerId } },
       relations: ['customer', 'bookings', 'reviews'],
@@ -119,7 +119,7 @@ export class VehiclesService {
       };
     });
   }
-  async update(id: string, updateVehicleDto: UpdateVehicleDto) {
+  async update(id: number, updateVehicleDto: UpdateVehicleDto) {
     const vehicle = await this.vehicleRepository.findOne({
       where: { id },
       relations: ['customer', 'bookings', 'reviews'],
@@ -135,7 +135,7 @@ export class VehiclesService {
     return this.vehicleRepository.save(vehicle);
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const vehicle = await this.vehicleRepository.findOne({
       where: { id },
       relations: ['bookings'],

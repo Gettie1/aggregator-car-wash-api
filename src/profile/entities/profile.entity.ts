@@ -1,9 +1,11 @@
 import { Exclude } from 'class-transformer';
 import { Customer } from 'src/customer/entities/customer.entity';
+import { Payment } from 'src/payments/entities/payment.entity';
 import { Vendor } from 'src/vendors/entities/vendor.entity';
 import {
   Column,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -27,6 +29,8 @@ export class Profile {
   lastName: string; // Last name of the user
   @Column({ unique: true })
   email: string; // Unique email address for the user
+  @Column({ type: 'text', nullable: true })
+  image?: string; // Optional image URL for the user profile
   @Column()
   @Exclude()
   password: string;
@@ -53,4 +57,9 @@ export class Profile {
   customer?: Relation<Customer>; // One-to-one relationship with the Customer entity
   @OneToOne(() => Vendor, (vendor) => vendor.profile)
   vendor?: Relation<Vendor>; // One-to-one relationship with the Vendor entity
+
+  @OneToMany(() => Payment, (payment) => payment.profile, {
+    onDelete: 'CASCADE',
+  })
+  payments: Payment[];
 }

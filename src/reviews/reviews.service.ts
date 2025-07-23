@@ -26,79 +26,81 @@ export class ReviewsService {
     @InjectRepository(Customer)
     private customerRepository: Repository<Customer>,
   ) {}
-  async create(createRatingDto: CreateReviewDto) {
+  async create(createReviewDto: CreateReviewDto) {
     // Validate and fetch related entities if necessary
-    const { customer_id, booking_id, vehicle_id, service_id, vendor_id } =
-      createRatingDto;
 
     const customer = await this.customerRepository.findOne({
-      where: { id: customer_id },
+      where: { id: createReviewDto.customer_id },
       select: ['id'],
       relations: ['profile'],
     });
     if (!customer) {
       throw new NotFoundException(
-        `Customer with ID ${customer_id} does not exist`,
+        `Customer with ID ${createReviewDto.customer_id} does not exist`,
       );
     }
 
     // Fetch the booking to ensure it exists
     const booking = await this.bookingRepository.findOne({
-      where: { id: booking_id },
+      where: { id: createReviewDto.booking_id },
       select: ['id'],
     });
     if (!booking) {
       throw new NotFoundException(
-        `Booking with ID ${booking_id} does not exist`,
+        `Booking with ID ${createReviewDto.booking_id} does not exist`,
       );
     }
 
     // Optionally fetch vehicle, service, and vendor if provided
-    let vehicle;
-    if (vehicle_id) {
+    let vehicle: Vehicle | null = null;
+    if (createReviewDto.vehicle_id) {
       vehicle = await this.vehicleRepository.findOne({
-        where: { id: vehicle_id },
+        where: { id: createReviewDto.vehicle_id },
         select: ['id'],
       });
       if (!vehicle) {
         throw new NotFoundException(
-          `Vehicle with ID ${vehicle_id} does not exist`,
+          `Vehicle with ID ${createReviewDto.vehicle_id} does not exist`,
         );
       }
     }
 
-    let service;
-    if (service_id) {
+    let service: Service | null = null;
+    if (createReviewDto.service_id) {
       service = await this.serviceRepository.findOne({
-        where: { id: service_id },
+        where: { id: createReviewDto.service_id },
         select: ['id'],
       });
       if (!service) {
         throw new NotFoundException(
-          `Service with ID ${service_id} does not exist`,
+          `Service with ID ${createReviewDto.service_id} does not exist`,
         );
       }
     }
 
-    let vendor;
-    if (vendor_id) {
-      vendor = await this.vendorRepository.findOne({
-        where: { id: vendor_id },
-        select: ['id'],
-      });
-      if (!vendor) {
-        throw new NotFoundException(
-          `Vendor with ID ${vendor_id} does not exist`,
-        );
-      }
+    const vendor = await this.vendorRepository.findOne({
+      where: { id: createReviewDto.vendor_id },
+      select: ['id'],
+    });
+    if (!vendor) {
+      throw new NotFoundException(
+        `Vendor with ID ${createReviewDto.vendor_id} does not exist`,
+      );
     }
 
     // Create the review entity
+
     const review = this.reviewRepository.create({
-      ...createRatingDto,
+      booking_id: createReviewDto.booking_id,
+      customer_id: createReviewDto.customer_id,
+      vehicle_id: createReviewDto.vehicle_id,
+      service_id: createReviewDto.service_id,
+      vendor_id: createReviewDto.vendor_id,
+      rating: createReviewDto.rating,
     });
 
-    return this.reviewRepository.save(review);
+    const savedReview = await this.reviewRepository.save(review);
+    return savedReview;
   }
 
   async findAll() {
@@ -124,7 +126,7 @@ export class ReviewsService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const review = await this.reviewRepository.findOne({
       where: { id },
       relations: ['vehicle', 'service', 'vendor'],
@@ -146,9 +148,9 @@ export class ReviewsService {
         : null,
     };
   }
-  async findByCustomerId(customerId: string) {
+  async findByCustomerId(customerId: number) {
     const reviews = await this.reviewRepository.find({
-      where: { id: customerId },
+      where: { customer: { id: customerId } },
       relations: ['customer', 'vehicle', 'service', 'vendor', 'booking'], // adjust as needed
       order: { created_at: 'DESC' },
     });
@@ -169,7 +171,7 @@ export class ReviewsService {
       vendor: review.vendor?.business_name || null,
     }));
   }
-  async findByVehicleId(vehicleId: string) {
+  async findByVehicleId(vehicleId: number) {
     const reviews = await this.reviewRepository.find({
       where: { vehicle: { id: vehicleId } },
       relations: ['vehicle', 'service', 'vendor'],
@@ -193,7 +195,7 @@ export class ReviewsService {
       };
     });
   }
-  async findByVendorId(vendorId: string) {
+  async findByVendorId(vendorId: number) {
     const reviews = await this.reviewRepository.find({
       where: { vendor: { id: vendorId } },
       relations: ['vehicle', 'service', 'vendor', 'customer.profile'],
@@ -224,7 +226,7 @@ export class ReviewsService {
       };
     });
   }
-  async update(id: string, updateReviewDto: UpdateReviewDto) {
+  async update(id: number, updateReviewDto: UpdateReviewDto) {
     const review = await this.reviewRepository.findOne({
       where: { id },
       relations: ['vehicle', 'service', 'vendor'],
@@ -241,7 +243,7 @@ export class ReviewsService {
     return this.reviewRepository.save(review);
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const review = await this.reviewRepository.findOne({
       where: { id },
       relations: ['vehicle', 'service', 'vendor'],

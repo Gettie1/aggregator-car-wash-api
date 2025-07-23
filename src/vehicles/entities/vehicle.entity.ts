@@ -16,7 +16,7 @@ import {
 @Entity('vehicles')
 export class Vehicle {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ type: 'varchar', length: 100 })
   make: string; // Manufacturer of the vehicle

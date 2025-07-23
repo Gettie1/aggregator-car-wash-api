@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsInt, Min, Max } from 'class-validator';
+import { IsString, IsInt, Min, Max, IsNumber } from 'class-validator';
 
 export class CreateVehicleDto {
   @ApiProperty({
@@ -44,6 +44,6 @@ export class CreateVehicleDto {
     description: 'Customer ID',
     example: 'customer123',
   })
-  @IsString()
-  customer_id: string;
+  @IsNumber()
+  customer_id: number;
 }

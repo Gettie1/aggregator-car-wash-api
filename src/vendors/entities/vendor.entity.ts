@@ -18,15 +18,17 @@ import {
 @Entity('vendors')
 export class Vendor {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
   @Column({ type: 'varchar', length: 255 })
   business_name: string; // Business name of the vendor
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  tax_id?: string; // Tax identification number
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  tax_id?: number; // Tax identification number
 
-  @Column({ type: 'text' })
-  business_address: string; // Business address of the vendor
+  @Column({ type: 'text', nullable: true })
+  address?: string; // Business address of the vendor
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  location?: string; // Location of the vendor, if applicable
 
   @Column({ type: 'varchar', length: 20, default: 'active' })
   status: string; // Status of the vendor (active, inactive, suspended)

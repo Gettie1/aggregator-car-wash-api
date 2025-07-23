@@ -112,6 +112,7 @@ export class AuthService {
         phone: user.phone,
         firstname: `${user.firstName}`,
         lastname: `${user.lastName}`,
+        image: user.image,
         ...extra,
       },
       accessToken,

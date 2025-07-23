@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateVendorDto {
   @ApiProperty({
@@ -8,8 +8,8 @@ export class CreateVendorDto {
     example: 'vendor123',
   })
   @IsOptional()
-  @IsString()
-  profileId?: string; // ID of the profile associated with the vendor
+  @IsNumber()
+  profileId?: number; // ID of the profile associated with the vendor
   @ApiProperty({
     type: String,
     description: 'First name of the vendor (optional)',
@@ -62,6 +62,14 @@ export class CreateVendorDto {
   })
   @IsString()
   address: string; // Business address of the vendor
+  @ApiProperty({
+    type: String,
+    description: 'Location of the vendor, if applicable',
+    example: 'Springfield, USA',
+  })
+  @IsString()
+  @IsOptional()
+  location?: string; // Location of the vendor, if applicable
   @ApiProperty({
     type: String,
     description: 'Status of the vendor',

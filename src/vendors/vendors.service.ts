@@ -78,7 +78,7 @@ export class VendorsService {
     // 3. Create and link the vendor
     const vendor = this.vendorRepository.create({
       business_name: createVendorDto.business_name,
-      taxId: createVendorDto.tax_id,
+      tax_id: createVendorDto.tax_id ? +createVendorDto.tax_id : undefined,
       address: createVendorDto.address,
       status: createVendorDto.status || 'active',
       profile: profile,
@@ -92,32 +92,33 @@ export class VendorsService {
       profile,
     };
   }
-  async findAll(search?: string) {
-    let vendors: Profile[];
+  async findAll(search?: string): Promise<Vendor[]> {
+    let vendors: Vendor[];
     if (search) {
-      vendors = await this.profileRepository.find({
+      vendors = await this.vendorRepository.find({
         where: {
-          // vendor: { business_name: search },
-          role: Role.VENDOR,
+          business_name: search,
         },
-        relations: ['vendor'],
+        relations: ['profile'],
       });
     } else {
-      vendors = await this.profileRepository.find({
-        where: {
-          role: Role.VENDOR,
-        },
-        relations: ['vendor'],
+      vendors = await this.vendorRepository.find({
+        relations: ['profile'],
       });
+      // Filter vendors whose profile has role VENDOR
+      vendors = vendors.filter(
+        (vendor) => vendor.profile?.role === Role.VENDOR,
+      );
     }
-
-    return vendors.map((vendor) => ({
-      ...vendor,
-      vendor: vendor.vendor,
-    }));
+    return vendors.map((vendor) => {
+      return {
+        ...vendor,
+        profile: vendor.profile,
+      };
+    });
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const vendor = await this.vendorRepository.findOne({
       where: { id },
       relations: [
@@ -138,7 +139,7 @@ export class VendorsService {
     };
   }
 
-  async update(id: string, updateVendorDto: UpdateVendorDto) {
+  async update(id: number, updateVendorDto: UpdateVendorDto) {
     const vendor = await this.vendorRepository.findOne({
       where: { id },
       relations: ['profile'],
@@ -153,7 +154,7 @@ export class VendorsService {
     return this.vendorRepository.save(updatedVendor);
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const vendor = await this.vendorRepository.findOne({
       where: { id },
       relations: ['profile'],

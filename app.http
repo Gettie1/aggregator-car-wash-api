@@ -2,7 +2,7 @@
 
 
 @refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTIzMjQ5LCJleHAiOjE3NTE1MjQxNDl9.EbUk3H3VLT2GPNpKGX53b6zLv61y5yAsdBwDh6ng3wY
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUyNzgyNTU4LCJleHAiOjE3NTI3ODYxNTh9.Y_Mn2avjrhk0uX6KXRA0KE60xCyEPrZ_0m4t_EGUlcg
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUzMjY4OTIzLCJleHAiOjE3NTMyNzI1MjN9.MjYjnGcpywrBlTwaFvyWS2LbNvnwHDxaMyPluOEPg08
 
 @admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0LCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTU0MzE4NywiZXhwIjoxNzUxNTQ0MDg3fQ.0ovBnvKZgQh4zunVqx2ReVVQtN10XaEKtXocKRClWX0
 @vendor_token =
@@ -22,12 +22,12 @@ POST {{url}}/profile
 Content-Type: application/json
 
 {
-  "firstName": "customer",
-  "lastName": "Christine",
-  "email": "customer@gmail.com",
-  "password": "customer123", 
+  "firstName": "Getrude",
+  "lastName": "Cheptoo",
+  "email": "cheptoog677@gmail.com",
+  "password": "getrude123",
   "role": "customer",
-  "phone": "1234567890"
+  "phone": "1212121210"
 }
 #### GET ALL PROFILES ####
 GET {{url}}/profile
@@ -47,7 +47,7 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### DELETE PROFILE BY ID ###
-DELETE {{url}}/profile/6
+DELETE {{url}}/profile/27
 Authorization: Bearer {{accessToken}}
 
 #### SEED DATABASE ####
@@ -59,11 +59,11 @@ POST {{url}}/vendors
 Content-Type: application/json
 
 { 
-  "profileId": "7",
+  "profileId": 7,
   "business_name": "Getrude's Car Wash",
   "phone": "0123456789",
   "tax_id": "0987654321",
-  "business_address": "456 Elm St, City, Country",
+  "address": "456 Elm St, City, Country",
   "status": "active"
 
 }
@@ -94,8 +94,8 @@ POST {{url}}/customer
 Content-Type: application/json
 
 {
-  "profileId":"10",
-  "phoneNumber":"12745600",
+  "profileId": 10,
+  "phone": "12745600",
   "address": "123456789"
 }
 
@@ -104,7 +104,7 @@ GET {{url}}/customer
 Authorization:  Bearer {{accessToken}}
 
 #### GET CUSTOMER BY ID ####
-GET {{url}}/customer/3
+GET {{url}}/customer/1
 Authorization: Bearer {{accessToken}}
 
 #### UPDATE CUSTOMER BY ID ###
@@ -149,22 +149,19 @@ POST {{url}}/bookings
 Content-Type: application/json
 
 {
-  "customerId": "2",
+  "customerId": 2,
   "serviceName": "Premium Wash",
   "vendorName": "June's Car Wash",
   "vehiclePlateNo": "KBX1234",
-  "duration": "40",
   "location": "123 Main St, City, Country",
   "scheduled_at": "2023-10-01T10:00:00Z",
-  "status": "Confirmed",
-  "payment_status": "paid",
   "payment_method": "credit_card"
 }
 #### GET ALL BOOKINGS ####
 GET {{url}}/bookings
 
 #### GET BOOKING BY ID ####
-GET {{url}}/bookings/6
+GET {{url}}/bookings/7
 
 #### GET BOOKINGS BY Vendor ID ####
 GET {{url}}/bookings/vendor/1
@@ -193,7 +190,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "customer_id": "2",
+  "customer_id": 2,
   "make": "Benz",
   "model": "A4",
   "year": 2023,
@@ -205,9 +202,9 @@ Authorization: Bearer {{accessToken}}
 GET {{url}}/vehicles
 
 #### GET VEHICLE BY ID ####
-GET {{url}}/vehicles/1
+GET {{url}}/vehicles/3
 #### GET VEHICLES BY CUSTOMER ID ####
-GET {{url}}/vehicles/customer/2
+GET {{url}}/vehicles/customer/1
 
 #### UPDATE VEHICLE BY ID ####
 PATCH {{url}}/vehicles/1
@@ -243,7 +240,7 @@ GET {{url}}/services
 GET {{url}}/services/3
 
 #### GET SERVICES BY VENDOR ID ####
-GET {{url}}/services/vendor/2
+GET {{url}}/services/vendor/1
 
 #### UPDATE SERVICE BY ID ####
 PATCH {{url}}/services/3
@@ -261,12 +258,12 @@ POST {{url}}/reviews
 Content-Type: application/json
 
 {
-  "customer_id": "1",
-  "vendor_id": "2",
-  "booking_id": "2",
-  "vehicle_id": "5",
-  "service_id": "3",
-  "rating": "2",
+  "customer_id": 1,
+  "vendor_id": 1,
+  "booking_id": 9,
+  "vehicle_id": 6,
+  "service_id": 3,
+  "rating": 6,
   "comment": "Average service, not worth the price."
 }
 
@@ -274,7 +271,7 @@ Content-Type: application/json
 GET {{url}}/reviews
 
 #### GET REVIEW BY ID ####
-GET {{url}}/reviews/2
+GET {{url}}/reviews/10
 
 #### GET REVIEWS BY CUSTOMER ID ####
 GET {{url}}/reviews/customer/1
@@ -294,6 +291,59 @@ Content-Type: application/json
 #### DELETE REVIEW BY ID ####
 DELETE {{url}}/reviews/1
 
+### CALL CHAT API ####
+POST {{url}}/chat
+Content-Type: application/json
 
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hi, can you help me wash my car?"
+    },
+    {
+      "role": "assistant",
+      "content": "Sure! When would you like to book?"
+    }
+  ]
+}
 
+#### CREATE NEW PAYMENT ####
+POST {{url}}/payments/initialize
+Content-Type: application/json
+
+{
+  "amount": 100.00,
+  "booking_id": 7,
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "customer@example.com",
+  "phone_number": "0712345678",
+  "payment_method": "credit_card"
+}
+#### VERIFY PAYMENT ####
+GET {{url}}/payments/verify/pay_1753218748659_734539
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+# {
+#   "reference": "pay_1234567890"
+# }
+
+### UPLOAD IMAGES ###
+
+POST {{url}}/images/upload
+Content-Type: multipart/form-data
+
+file=@C:\Users\user\OneDrive\Pictures\Camera Roll\IMG-20250705-WA0016[1].jpg
+
+# {
+#   "file": "{{file}}"
+# }
+
+### Upload image to NestJS API
+POST http://localhost:4001/images/upload
+Content-Type: multipart/form-data
+
+file=@C:/Users/user/OneDrive/Pictures/Camera Roll/IMG-20250705-WA0016[1].jpg
 

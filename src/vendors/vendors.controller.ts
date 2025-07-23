@@ -38,16 +38,16 @@ export class VendorsController {
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.vendorsService.findOne(id);
+    return this.vendorsService.findOne(+id);
   }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateVendorDto: UpdateVendorDto) {
-    return this.vendorsService.update(id, updateVendorDto);
+    return this.vendorsService.update(+id, updateVendorDto);
   }
   @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.vendorsService.remove(id);
+    return this.vendorsService.remove(+id);
   }
 }

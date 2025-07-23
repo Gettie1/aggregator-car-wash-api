@@ -102,28 +102,30 @@ export class CustomerService {
     });
   }
 
-  async findOne(profileId: string) {
+  async findOne(id: number) {
     const customer = await this.customerRepository.findOne({
-      where: { profile: { id: Number(profileId) } },
-      relations: [
-        'profile',
-        // 'customer.bookings',
-        // 'customer.services',
-        // 'customer.ratings',
-      ],
+      where: { id },
+      relations: ['profile'],
     });
-
     if (!customer) {
-      throw new NotFoundException(`Customer with ID ${profileId} not found`);
+      throw new NotFoundException(`Customer with ID ${id} not found`);
     }
-
     return {
-      ...customer,
-      profile: customer.profile,
+      id: customer.id,
+      phone_number: customer.phone_number,
+      address: customer.address,
+      created_at: customer.created_at,
+      updated_at: customer.updated_at,
+      profile: {
+        id: customer.profile.id,
+        firstName: customer.profile.firstName,
+        lastName: customer.profile.lastName,
+        email: customer.profile.email,
+      },
     };
   }
 
-  async update(id: string, updateCustomerDto: UpdateCustomerDto) {
+  async update(id: number, updateCustomerDto: UpdateCustomerDto) {
     const customer = await this.customerRepository.findOne({
       where: { id },
       relations: ['profile'],
@@ -139,7 +141,7 @@ export class CustomerService {
     return updateCustomer;
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const customer = await this.customerRepository.findOne({
       where: { id },
       relations: ['profile'],

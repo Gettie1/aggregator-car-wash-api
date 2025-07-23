@@ -40,33 +40,33 @@ export class ReviewsController {
 
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.reviewsService.findOne(id);
   }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Get('vehicle/:id')
-  findByVehicleId(@Param('id') id: string) {
+  findByVehicleId(@Param('id') id: number) {
     return this.reviewsService.findByVehicleId(id);
   }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Get('vendor/:id')
-  findByVendorId(@Param('vendorId') vendorId: string) {
+  findByVendorId(@Param('vendorId') vendorId: number) {
     return this.reviewsService.findByVendorId(vendorId);
   }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Get('customer/:id')
-  findByCustomerId(@Param('customerId') customerId: string) {
+  findByCustomerId(@Param('customerId') customerId: number) {
     return this.reviewsService.findByCustomerId(customerId);
   }
   @Roles(Role.ADMIN, Role.CUSTOMER, Role.VENDOR)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
+  update(@Param('id') id: number, @Body() updateReviewDto: UpdateReviewDto) {
     return this.reviewsService.update(id, updateReviewDto);
   }
 
   @Roles(Role.ADMIN, Role.VENDOR, Role.CUSTOMER)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.reviewsService.remove(id);
   }
 }

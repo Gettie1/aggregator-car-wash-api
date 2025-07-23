@@ -5,12 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './entities/profile.entity';
 import { Repository } from 'typeorm';
 import * as Bcrypt from 'bcrypt';
-// import { Role } from './entities/profile.entity';
+import { MailService } from 'src/mails/mails.service';
+import { Mailer } from 'src/mails/mailHelper';
 
 // @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(Profile) private profileRepository: Repository<Profile>,
+    private readonly mailService: MailService,
   ) {}
   private async hashData(data: string): Promise<string> {
     const salt = await Bcrypt.genSalt(10);
@@ -40,17 +42,15 @@ export class ProfileService {
       phone: createProfileDto.phone, // Add the missing phone field
       password: await this.hashData(createProfileDto.password), // Hash the password
       role: createProfileDto.role,
+      image: createProfileDto.image, // Optional image URL for the user profile
     };
     // Create a new Profile entity
-    const savedProfile = await this.profileRepository
-      .save(newProfile)
-      .then((profile) => {
-        return profile;
-      })
-      .catch((error) => {
-        console.error('Error creating profile:', error);
-        throw new BadRequestException('Failed to create profile');
-      });
+    const savedProfile = await this.profileRepository.save(newProfile);
+    const mailer = Mailer(this.mailService);
+    await mailer.welcomeEmail({
+      name: savedProfile.firstName,
+      email: savedProfile.email,
+    });
     return this.excludePassword(savedProfile);
   }
   async findAll(email?: string): Promise<Partial<Profile>[]> {

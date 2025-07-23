@@ -13,6 +13,7 @@ import { Vendor } from 'src/vendors/entities/vendor.entity';
 import { Service } from 'src/services/entities/service.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import { Vehicle } from 'src/vehicles/entities/vehicle.entity';
+import { BookingStatus } from './entities/booking.entity';
 
 @Injectable()
 export class BookingsService {
@@ -51,7 +52,7 @@ export class BookingsService {
       business_name: vendorName,
     });
     if (!vendor) {
-      throw new NotFoundException('Vendor not found');
+      throw new NotFoundException(`Vendor with ${vendorName} not found`);
     }
 
     const service = await this.ServiceRepository.findOneBy({
@@ -93,6 +94,7 @@ export class BookingsService {
     const existingBooking = await this.BookingRepository.findOne({
       where: {
         vehicle: { license_plate: vehiclePlateNo },
+        status: BookingStatus.PENDING, // or any other status you want to check against
       },
       relations: ['vehicle', 'customer'],
     });
@@ -114,6 +116,7 @@ export class BookingsService {
 
     const booking = this.BookingRepository.create({
       ...createBookingDto,
+      price: service.price,
       customer: customer,
       vendor: vendor,
       service: service,
@@ -133,12 +136,13 @@ export class BookingsService {
         customer: booking.customer.id,
         vendor: booking.vendor.business_name,
         service: booking.service.name,
+        servicePrice: booking.service.price,
         vehicle: booking.vehicle.license_plate,
       };
     });
   }
 
-  async findByCustomerId(customerId: string) {
+  async findByCustomerId(customerId: number) {
     const bookings = await this.BookingRepository.find({
       where: { customer: { id: customerId } },
       relations: ['customer', 'vendor', 'service', 'vehicle'],
@@ -154,12 +158,13 @@ export class BookingsService {
         customer: booking.customer.id,
         vendor: booking.vendor.business_name,
         service: booking.service.name,
+        servicePrice: booking.service.price,
         vehicle: booking.vehicle.license_plate,
       };
     });
   }
   // findbyvendorid or name
-  async findByVendorId(vendorId: string) {
+  async findByVendorId(vendorId: number) {
     const bookings = await this.BookingRepository.find({
       where: { vendor: { id: vendorId } },
       relations: ['customer', 'vendor', 'service', 'vehicle'],
@@ -182,7 +187,7 @@ export class BookingsService {
   }
   async findOne(id: number) {
     const booking = await this.BookingRepository.findOne({
-      where: { id: id.toString() },
+      where: { id: id },
       relations: ['customer', 'vendor', 'service', 'vehicle'],
     });
     if (!booking) {
@@ -199,7 +204,7 @@ export class BookingsService {
 
   async update(id: number, updateBookingDto: UpdateBookingDto) {
     const booking = await this.BookingRepository.findOne({
-      where: { id: id.toString() },
+      where: { id: id },
       relations: ['customer', 'vendor', 'service', 'vehicle'],
     });
     if (!booking) {
@@ -209,12 +214,10 @@ export class BookingsService {
     const updatedBooking = Object.assign(booking, updateBookingDto);
     return this.BookingRepository.save(updatedBooking);
   }
-  async updateBookingStatus(
-    id: number,
-    status: 'pending' | 'confirmed' | 'cancelled',
-  ) {
+
+  async updateBookingStatus(id: number, status: BookingStatus) {
     const booking = await this.BookingRepository.findOne({
-      where: { id: id.toString() },
+      where: { id: id },
       relations: ['customer', 'vendor', 'service', 'vehicle'],
     });
     if (!booking) {
@@ -226,7 +229,7 @@ export class BookingsService {
   }
   async remove(id: number) {
     const booking = await this.BookingRepository.findOne({
-      where: { id: id.toString() },
+      where: { id: id },
     });
     if (!booking) {
       throw new NotFoundException(`Booking with id ${id} not found`);

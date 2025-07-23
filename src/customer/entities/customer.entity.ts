@@ -15,7 +15,7 @@ import { Review } from 'src/reviews/entities/review.entity';
 @Entity()
 export class Customer {
   @PrimaryGeneratedColumn()
-  id: string; // Unique identifier for the customer
+  id: number; // Unique identifier for the customer
 
   @Column()
   phone_number: string; // Phone number of the customer

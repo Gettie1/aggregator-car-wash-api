@@ -20,6 +20,8 @@ import { Profile } from './profile/entities/profile.entity';
 // import { APP_GUARD } from '@nestjs/core';
 import { SeedModule } from './seed/seed.module';
 import { ChatModule } from './chat/chat.module';
+import { PaymentsModule } from './payments/payments.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -57,6 +59,8 @@ import { ChatModule } from './chat/chat.module';
     LogsModule,
     SeedModule,
     ChatModule,
+    PaymentsModule,
+    ImagesModule,
   ],
   providers: [
     // { provide: APP_GUARD, useClass: AtGuard },
