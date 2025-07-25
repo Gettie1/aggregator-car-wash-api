@@ -42,7 +42,7 @@ export class ProfileService {
       phone: createProfileDto.phone, // Add the missing phone field
       password: await this.hashData(createProfileDto.password), // Hash the password
       role: createProfileDto.role,
-      image: createProfileDto.image, // Optional image URL for the user profile
+      // image: createProfileDto.image, // Optional image URL for the user profile
     };
     // Create a new Profile entity
     const savedProfile = await this.profileRepository.save(newProfile);
@@ -90,9 +90,9 @@ export class ProfileService {
     }
 
     // 🚫 Prevent role from being changed once set
-    if (updateProfileDto.role && updateProfileDto.role !== profile.role) {
-      throw new BadRequestException('Role cannot be changed once set.');
-    }
+    // if (updateProfileDto.role && updateProfileDto.role !== profile.role) {
+    //   throw new BadRequestException('Role cannot be changed once set.');
+    // }
 
     // ✅ Update all other fields
     Object.assign(profile, updateProfileDto);

@@ -2,7 +2,7 @@
 
 
 @refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTIzMjQ5LCJleHAiOjE3NTE1MjQxNDl9.EbUk3H3VLT2GPNpKGX53b6zLv61y5yAsdBwDh6ng3wY
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUzMjY4OTIzLCJleHAiOjE3NTMyNzI1MjN9.MjYjnGcpywrBlTwaFvyWS2LbNvnwHDxaMyPluOEPg08
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUzNDI2NTkwLCJleHAiOjE3NTM0MzAxOTB9.jTMd-wZfVofdPgpuvHs4tFaOIAgNXW-dUxcgn24BbZg
 
 @admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0LCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTU0MzE4NywiZXhwIjoxNzUxNTQ0MDg3fQ.0ovBnvKZgQh4zunVqx2ReVVQtN10XaEKtXocKRClWX0
 @vendor_token =
@@ -43,11 +43,11 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "role": "customer"
+  "role": "vendor"
 }
 
 ### DELETE PROFILE BY ID ###
-DELETE {{url}}/profile/27
+DELETE {{url}}/profile/8
 Authorization: Bearer {{accessToken}}
 
 #### SEED DATABASE ####
@@ -59,12 +59,12 @@ POST {{url}}/vendors
 Content-Type: application/json
 
 { 
-  "profileId": 7,
-  "business_name": "Getrude's Car Wash",
-  "phone": "0123456789",
-  "tax_id": "0987654321",
+  "profileId": 9,
+  "business_name": "The Master Car Wash",
+  "phone": "00011223344",
+  "tax_id": "0944654333",
   "address": "456 Elm St, City, Country",
-  "status": "active"
+  "status": "Inactive"
 
 }
 #### GET ALL VENDORS ####

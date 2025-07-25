@@ -52,13 +52,13 @@ export class CreateBookingDto {
   // })
   // @IsString()
   // duration: string;
-  @ApiProperty({
-    type: String,
-    description: 'Booking location',
-    example: '123 Main St',
-  })
-  @IsString()
-  location: string;
+  // @ApiProperty({
+  //   type: String,
+  //   description: 'Booking location',
+  //   example: '123 Main St',
+  // })
+  // @IsString()
+  // location: string;
   @ApiProperty({
     type: String,
     description: 'Booking date and time',

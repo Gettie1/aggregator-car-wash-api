@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsInt, Min, Max, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  Min,
+  Max,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateVehicleDto {
   @ApiProperty({
@@ -46,4 +53,12 @@ export class CreateVehicleDto {
   })
   @IsNumber()
   customer_id: number;
+  @ApiProperty({
+    type: String,
+    description: 'Image URL of the vehicle',
+    example: 'https://example.com/image.jpg',
+  })
+  @IsString()
+  @IsOptional()
+  image?: string;
 }

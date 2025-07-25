@@ -27,6 +27,9 @@ export class Vehicle {
   @Column({ type: 'int' })
   year: number; // Year of manufacture
 
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  image?: string; // Optional image URL of the vehicle
+
   @Column({ type: 'varchar', length: 50 })
   color: string; // Color of the vehicle
 
