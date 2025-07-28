@@ -31,8 +31,11 @@ export class Payment {
   })
   payment_method: PaymentMethod;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  full_name?: string;
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  first_name: string;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  last_name: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   email: string;

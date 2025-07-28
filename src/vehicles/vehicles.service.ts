@@ -52,6 +52,7 @@ export class VehiclesService {
       model: createVehicleDto.model,
       year: createVehicleDto.year,
       color: createVehicleDto.color,
+      image: createVehicleDto.image,
       customer: customerEntity,
     });
 

@@ -91,28 +91,28 @@ export class BookingsService {
     }
 
     // Ensure the vehicle is not already booked by another customer
-    const existingBooking = await this.BookingRepository.findOne({
-      where: {
-        vehicle: { license_plate: vehiclePlateNo },
-        status: BookingStatus.PENDING, // or any other status you want to check against
-      },
-      relations: ['vehicle', 'customer'],
-    });
+    // const existingBooking = await this.BookingRepository.findOne({
+    //   where: {
+    //     vehicle: { license_plate: vehiclePlateNo },
+    //     status: BookingStatus.PENDING, // or any other status you want to check against
+    //   },
+    //   relations: ['vehicle', 'customer'],
+    // });
 
-    if (existingBooking) {
-      throw new NotFoundException(
-        'This vehicle is already linked to another booking.',
-        '',
-      );
-    }
+    // if (existingBooking) {
+    //   throw new NotFoundException(
+    //     'This vehicle is already linked to another booking.',
+    //     '',
+    //   );
+    // }
 
-    // Ensure the vehicle belongs to the customer
-    if (vehicle.customer.id !== customer.id) {
-      throw new NotFoundException(
-        'This vehicle does not belong to the specified customer.',
-        '',
-      );
-    }
+    // // Ensure the vehicle belongs to the customer
+    // if (vehicle.customer.id !== customer.id) {
+    //   throw new NotFoundException(
+    //     'This vehicle does not belong to the specified customer.',
+    //     '',
+    //   );
+    // }
 
     const booking = this.BookingRepository.create({
       ...createBookingDto,

@@ -170,4 +170,19 @@ export class PaymentsService {
       );
     }
   }
+  async getPaymentById(id: number): Promise<Payment> {
+    const payment = await this.paymentRepository.findOne({
+      where: { payment_id: id },
+      relations: ['booking'],
+    });
+    if (!payment) {
+      throw new NotFoundException('Payment not found');
+    }
+    return payment;
+  }
+  async getAllPayments(): Promise<Payment[]> {
+    return await this.paymentRepository.find({
+      relations: ['booking'],
+    });
+  }
 }

@@ -52,7 +52,7 @@ export class CustomerController {
   }
   @Roles(Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  deleteCustomerWithProfile(@Param('id') id: string) {
     return this.customerService.remove(+id);
   }
 }

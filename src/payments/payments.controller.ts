@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Get, Query, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Res, Param } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payement.dto';
 import { Response } from 'express';
+import { Payment } from './entities/payment.entity';
 
 @Controller('payments')
 export class PaymentsController {
@@ -20,5 +21,13 @@ export class PaymentsController {
   ) {
     await this.paymentsService.verifyPayment(reference);
     return res.redirect('http://localhost:3000/dashboard/dashboard/MyBookings');
+  }
+  @Get(':id')
+  async getPaymentById(@Param('id') id: number): Promise<Payment> {
+    return this.paymentsService.getPaymentById(id);
+  }
+  @Get()
+  async getAllPayments(): Promise<Payment[]> {
+    return this.paymentsService.getAllPayments();
   }
 }

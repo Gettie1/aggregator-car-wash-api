@@ -129,7 +129,7 @@ export class ReviewsService {
   async findOne(id: number) {
     const review = await this.reviewRepository.findOne({
       where: { id },
-      relations: ['vehicle', 'service', 'vendor'],
+      relations: ['vehicle', 'service', 'vendor', 'customer'],
     });
 
     if (!review) {
@@ -145,6 +145,14 @@ export class ReviewsService {
       service: service ? { id: service.id, name: service.name } : null,
       vendor: vendor
         ? { id: vendor.id, business_name: vendor.business_name }
+        : null,
+      customer: review.customer
+        ? {
+            id: review.customer.id,
+            firstName: review.customer.profile?.firstName,
+            lastName: review.customer.profile?.lastName,
+            email: review.customer.profile?.email,
+          }
         : null,
     };
   }

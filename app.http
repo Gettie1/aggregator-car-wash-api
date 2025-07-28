@@ -2,7 +2,7 @@
 
 
 @refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTIzMjQ5LCJleHAiOjE3NTE1MjQxNDl9.EbUk3H3VLT2GPNpKGX53b6zLv61y5yAsdBwDh6ng3wY
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUzNDI2NTkwLCJleHAiOjE3NTM0MzAxOTB9.jTMd-wZfVofdPgpuvHs4tFaOIAgNXW-dUxcgn24BbZg
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUzNjMzMjE4LCJleHAiOjE3NTM3MTk2MTh9.25r_HsQDO8JAR38uRjG2UplNY5bGQkbDYmWSsVAfkn4
 
 @admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0LCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTU0MzE4NywiZXhwIjoxNzUxNTQ0MDg3fQ.0ovBnvKZgQh4zunVqx2ReVVQtN10XaEKtXocKRClWX0
 @vendor_token =
@@ -34,20 +34,20 @@ GET {{url}}/profile
 Authorization: Bearer {{accessToken}}
 
 #### GET PROFILE BY ID ####
-GET {{url}}/profile/2
+GET {{url}}/profile/1
 Authorization: Bearer {{accessToken}}
 
 ###  UPDATE PROFILE BY ID ###
-PATCH {{url}}/profile/2
+PATCH {{url}}/profile/1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "role": "vendor"
+  "phone": "1234567890"
 }
 
 ### DELETE PROFILE BY ID ###
-DELETE {{url}}/profile/8
+DELETE {{url}}/profile/40
 Authorization: Bearer {{accessToken}}
 
 #### SEED DATABASE ####
@@ -94,7 +94,7 @@ POST {{url}}/customer
 Content-Type: application/json
 
 {
-  "profileId": 10,
+  "profileId": 47,
   "phone": "12745600",
   "address": "123456789"
 }
@@ -116,7 +116,7 @@ Content-Type: application/json
 }
 
 #### DELETE CUSTOMER BY ID ####
-DELETE {{url}}/customer/1
+DELETE {{url}}/customer/47
 
 
 #### CREATE NEW ADMIN ####
@@ -149,11 +149,10 @@ POST {{url}}/bookings
 Content-Type: application/json
 
 {
-  "customerId": 2,
+  "customerId": 1,
   "serviceName": "Premium Wash",
   "vendorName": "June's Car Wash",
   "vehiclePlateNo": "KBX1234",
-  "location": "123 Main St, City, Country",
   "scheduled_at": "2023-10-01T10:00:00Z",
   "payment_method": "credit_card"
 }
@@ -161,10 +160,13 @@ Content-Type: application/json
 GET {{url}}/bookings
 
 #### GET BOOKING BY ID ####
-GET {{url}}/bookings/7
+GET {{url}}/bookings/1
 
 #### GET BOOKINGS BY Vendor ID ####
 GET {{url}}/bookings/vendor/1
+
+#### GET BOOKINGS BY CUSTOMER ID ####
+GET {{url}}/bookings/customer/1
 
 
 #### UPDATE BOOKING BY ID ####
@@ -243,11 +245,11 @@ GET {{url}}/services/3
 GET {{url}}/services/vendor/1
 
 #### UPDATE SERVICE BY ID ####
-PATCH {{url}}/services/3
+PATCH {{url}}/services/8
 Content-Type: application/json
 
 {
-  "name": "Simple Wash"
+  "price": "3000"
 }
 
 #### DELETE SERVICE BY ID ####
@@ -258,12 +260,12 @@ POST {{url}}/reviews
 Content-Type: application/json
 
 {
-  "customer_id": 1,
-  "vendor_id": 1,
+  "customer_id": 2,
+  "vendor_id": 8,
   "booking_id": 9,
   "vehicle_id": 6,
   "service_id": 3,
-  "rating": 6,
+  "rating": 3,
   "comment": "Average service, not worth the price."
 }
 
@@ -271,7 +273,7 @@ Content-Type: application/json
 GET {{url}}/reviews
 
 #### GET REVIEW BY ID ####
-GET {{url}}/reviews/10
+GET {{url}}/reviews/15
 
 #### GET REVIEWS BY CUSTOMER ID ####
 GET {{url}}/reviews/customer/1
@@ -280,11 +282,11 @@ GET {{url}}/reviews/customer/1
 GET {{url}}/reviews/vendor/1
 
 #### UPDATE REVIEW BY ID ####
-PATCH {{url}}/reviews/2
+PATCH {{url}}/reviews/15
 Content-Type: application/json
 
 {
-  "rating": "4",
+  "rating": 4,
   "comment": "Good service, but could be better."
 }
 
@@ -324,6 +326,14 @@ Content-Type: application/json
 #### VERIFY PAYMENT ####
 GET {{url}}/payments/verify/pay_1753218748659_734539
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### GET PAYMENT BY ID ###
+GET {{url}}/payments/1
+Authorization: Bearer {{accessToken}}
+
+#### GET ALL PAYMENTS ####
+GET {{url}}/payments
 Authorization: Bearer {{accessToken}}
 
 # {
