@@ -31,19 +31,14 @@ import { ImagesModule } from './images/images.module';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      // host: process.env.DB_HOST || 'localhost',
-      // port: parseInt(process.env.DB_PORT || '5432'),
-      // username: process.env.DB_USERNAME || 'postgres',
-      // password: process.env.DB_PASSWORD || 'password',
       url:
         process.env.DATABASE_URL ||
         'postgresql://neondb_owner:npg_tLC2sHF5mkpG@ep-withered-shadow-aejmah9y-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
-      // database: process.env.DB_NAME || 'carwash',
+
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-      synchronize: true,
+      synchronize: false,
       autoLoadEntities: true,
-      // synchronize: process.env.NODE_ENV !== 'production', // Don't use in production
       logging: process.env.NODE_ENV === 'development',
     }),
     // Add Profile entity for global RolesGuard
