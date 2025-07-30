@@ -2,7 +2,7 @@
 
 
 @refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoibWFya0BnbWFpbC5jb20iLCJyb2xlIjoidmVuZG9yIiwiaWF0IjoxNzUxNTIzMjQ5LCJleHAiOjE3NTE1MjQxNDl9.EbUk3H3VLT2GPNpKGX53b6zLv61y5yAsdBwDh6ng3wY
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUzNjMzMjE4LCJleHAiOjE3NTM3MTk2MTh9.25r_HsQDO8JAR38uRjG2UplNY5bGQkbDYmWSsVAfkn4
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImN1c3RvbWVyIiwiaWF0IjoxNzUzNzc5OTI1LCJleHAiOjE3NTM4NjYzMjV9.yg2TMMemclkUtIWECQ7FfEOCDOYHcMwDSTSTJ8Dz0QI
 
 @admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0LCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTU0MzE4NywiZXhwIjoxNzUxNTQ0MDg3fQ.0ovBnvKZgQh4zunVqx2ReVVQtN10XaEKtXocKRClWX0
 @vendor_token =
@@ -43,7 +43,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "phone": "1234567890"
+  "role":"admin"
 }
 
 ### DELETE PROFILE BY ID ###
@@ -79,8 +79,7 @@ PATCH {{url}}/vendors/7
 Content-Type: application/json
 
 { 
-  "phone": "123455670",
-  "status": "InActive"
+  "business_name": "The Ultimate Car Wash",
   
 }
 
