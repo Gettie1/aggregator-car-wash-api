@@ -29,18 +29,19 @@ import { ImagesModule } from './images/images.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url:
-        process.env.DATABASE_URL ||
-        'postgresql://neondb_owner:npg_tLC2sHF5mkpG@ep-withered-shadow-aejmah9y-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
-
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-      synchronize: false,
-      autoLoadEntities: true,
-      logging: process.env.NODE_ENV === 'development',
-    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'postgres',
+    //   url: process.env.DATABASE_URL,
+    //   entities: [__dirname + '/**/*.entity{.ts,.js}'],
+    //   migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+    //   synchronize: false,
+    //   autoLoadEntities: true,
+    //   logging: process.env.NODE_ENV === 'development',
+    //   ssl:
+    //     process.env.NODE_ENV === 'production'
+    //       ? { rejectUnauthorized: false }
+    //       : false,
+    // }),
     // Add Profile entity for global RolesGuard
     TypeOrmModule.forFeature([Profile]),
     ServicesModule,
