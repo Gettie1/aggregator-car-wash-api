@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         // username: configService.getOrThrow<string>('DB_USERNAME', 'postgres'),
         // password: configService.getOrThrow<string>('DB_PASSWORD', 'password'),
         // database: configService.getOrThrow<string>('DB_NAME', 'mydatabase'),
+        // autoLoadEntities: true,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: configService.getOrThrow<boolean>('DB_SYNC', true),
         logging: configService.getOrThrow<boolean>('DB_LOGGING', false),
